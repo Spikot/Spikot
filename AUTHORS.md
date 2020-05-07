@@ -1,0 +1,4 @@
+- HeartPattern
+  - Email: heartpattern@kakao.com
+  - Github Account: HeartPattern
+  - Website: https://github.com/HeartPattern
