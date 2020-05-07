@@ -70,7 +70,7 @@ if ("maven.user" in properties && "maven.password" in properties) {
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                artifactId = name
+                artifactId = project.name
                 from(components["java"])
                 artifact(tasks["dokkaJar"])
                 artifact(tasks["sourcesJar"])
