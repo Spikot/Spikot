@@ -18,7 +18,7 @@ pipeline{
         }
         stage('publish'){
             steps{
-                sh './gradlew publish -x test'
+                sh './gradlew publish -x test -Pmaven.user=${MAVEN_CREDENTIAL_USR} -Pmaven.password=${MAVEN_CREDENTIAL_PSW}'
             }
         }
     }

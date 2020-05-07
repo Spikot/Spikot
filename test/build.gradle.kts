@@ -12,5 +12,6 @@ spigot {
     main = "kr.heartpattern.spikot.test.TestPlugin"
 }
 
-if (File("local.gradle.kts").exists())
+if (File(projectDir, "local.gradle.kts").exists()) {
     apply("local.gradle.kts")
+}
