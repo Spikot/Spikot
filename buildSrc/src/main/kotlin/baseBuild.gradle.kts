@@ -79,9 +79,9 @@ if ("maven.user" in properties && "maven.password" in properties) {
         repositories {
             maven(
                 if (version.toString().endsWith("SNAPSHOT"))
-                    "https://maven.heartpattern.kr/repository/maven-public-snapshots/"
+                    "https://maven.heartpattern.kr/repository/spikot-snapshots/"
                 else
-                    "https://maven.heartpattern.kr/repository/maven-public-releases/"
+                    "https://maven.heartpattern.kr/repository/spikot-releases/"
             ) {
                 credentials {
                     username = properties["maven.user"] as String
