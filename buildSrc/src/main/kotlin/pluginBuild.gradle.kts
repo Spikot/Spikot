@@ -31,6 +31,7 @@ afterEvaluate {
     tasks {
         create<Jar>("createPlugin") {
             dependsOn("jar")
+            archiveBaseName.set(project.name + ".plugin")
             from(
                 configurations["shade"].map {
                     if (it.isDirectory)
