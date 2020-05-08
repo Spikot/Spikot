@@ -9,7 +9,6 @@ plugins {
 dependencies {
     api("org.reflections", "reflections", Version.reflections)
 
-    implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
 
     runtimeOnly("org.slf4j", "slf4j-jdk14", Version.slf4j_bridge)
