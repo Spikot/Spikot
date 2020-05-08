@@ -20,6 +20,12 @@ import kr.heartpattern.spikot.component.Component
 import kr.heartpattern.spikot.component.bean.*
 import kr.heartpattern.spikot.component.conditional.ConditionContext
 import kr.heartpattern.spikot.reflection.getObjectInstanceOrCreate
+import kr.heartpattern.spikot.util.catchAll
+import mu.KotlinLogging
+import kotlin.reflect.KClass
+import kotlin.reflect.jvm.jvmName
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Handle scope instance
@@ -27,14 +33,25 @@ import kr.heartpattern.spikot.reflection.getObjectInstanceOrCreate
 open class ScopeInstance<T : Component>(
     beans: BeanDefinitionSet
 ) {
-    val beans: List<BeanInstance<T>>
-
-    init {
-        this.beans = beans.asSequence()
+    private val _beans: Map<String, BeanInstance<T>> by lazy {
+        beans.asSequence()
             .filter { it.checkCondition(ConditionContext(it.owingPlugin)) }
             .sortedBy { it.priority }
-            .map { instantiate(it) }
-            .toList()
+            .mapNotNull {
+                logger.catchAll("Exception thrown while instantiate bean") {
+                    instantiate(it)
+                }
+            }
+            .map { it.instance::class.jvmName to it }
+            .toMap()
+    }
+
+    val beans: List<BeanInstance<T>>
+        get() = _beans.values.toList()
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> getBeanOfType(type: KClass<T>): T? {
+        return _beans[type.jvmName]?.instance as T?
     }
 
     /**

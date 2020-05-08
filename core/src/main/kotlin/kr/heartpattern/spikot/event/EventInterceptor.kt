@@ -14,32 +14,22 @@
  *  limitations under the License.
  */
 
-package kr.heartpattern.spikot.component.interceptor
+package kr.heartpattern.spikot.event
 
 import kr.heartpattern.spikot.component.Component
 import kr.heartpattern.spikot.component.bean.BeanInstance
+import kr.heartpattern.spikot.component.interceptor.BeanInterceptor
+import kr.heartpattern.spikot.component.interceptor.Interceptor
+import org.bukkit.Bukkit
+import org.bukkit.event.HandlerList
 
-/**
- * Intercept bean's lifecycle.
- */
-interface BeanInterceptor {
-    /**
-     * Invoked before bean is enabled
-     */
-    fun preEnable(bean: BeanInstance<Component>) {}
+@Interceptor
+private object EventInterceptor : BeanInterceptor {
+    override fun postEnable(bean: BeanInstance<Component>) {
+        Bukkit.getPluginManager().registerEvents(bean.instance, bean.plugin)
+    }
 
-    /**
-     * Invoked after bean is enabled
-     */
-    fun postEnable(bean: BeanInstance<Component>) {}
-
-    /**
-     * Invoked before bean is disabled
-     */
-    fun preDisable(bean: BeanInstance<Component>) {}
-
-    /**
-     * Invoked after bean is disabled
-     */
-    fun postDisable(bean: BeanInstance<Component>) {}
+    override fun postDisable(bean: BeanInstance<Component>) {
+        HandlerList.unregisterAll(bean.instance)
+    }
 }

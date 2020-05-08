@@ -14,28 +14,14 @@
  *  limitations under the License.
  */
 
-package kr.heartpattern.spikot.component
+package kr.heartpattern.spikot.component.scopes.player
 
-import kr.heartpattern.spikot.SpikotPlugin
-import org.bukkit.event.Listener
+import kr.heartpattern.spikot.component.scope.Scope
 
 /**
- * Component is a minimal fragment of plugin functionality. Component is same meaning with beans in spikot.
+ * Scope which is belong to player. Create new beans for each player.
  */
-abstract class Component : Listener {
-    /**
-     * Owing plugin of component
-     */
-    lateinit var plugin: SpikotPlugin
-        internal set
-
-    /**
-     * Invoked when bean enabled and injection is done
-     */
-    open fun onEnable() {}
-
-    /**
-     * Invoked when bean is disabled
-     */
-    open fun onDisable() {}
-}
+@Target(AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@Scope(PlayerScopeDefinition::class)
+annotation class PlayerScope

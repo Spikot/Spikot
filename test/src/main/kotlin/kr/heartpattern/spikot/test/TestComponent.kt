@@ -19,8 +19,8 @@ package kr.heartpattern.spikot.test
 import kr.heartpattern.spikot.component.Component
 import kr.heartpattern.spikot.component.Priority
 import kr.heartpattern.spikot.component.conditionals.Disable
-import kr.heartpattern.spikot.component.scopes.ServerComponent
-import kr.heartpattern.spikot.component.scopes.ServerScope
+import kr.heartpattern.spikot.component.scopes.server.ServerComponent
+import kr.heartpattern.spikot.component.scopes.server.ServerScope
 
 @ServerScope
 @Priority(5)

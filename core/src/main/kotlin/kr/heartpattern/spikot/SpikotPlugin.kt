@@ -27,7 +27,7 @@ import kr.heartpattern.spikot.component.classpath.UniversalClasspathScanner
 import kr.heartpattern.spikot.component.interceptor.InterceptorRegistry
 import kr.heartpattern.spikot.component.interceptor.PluginInterceptorRegistry
 import kr.heartpattern.spikot.component.interceptor.UniversalInterceptorRegistry
-import kr.heartpattern.spikot.component.scopes.ServerScopeInstance
+import kr.heartpattern.spikot.component.scopes.server.ServerScopeInstance
 import kr.heartpattern.spikot.coroutine.CoroutinePlugin
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin

@@ -17,6 +17,7 @@
 package kr.heartpattern.spikot.component.interceptor
 
 import kr.heartpattern.spikot.component.Component
+import kr.heartpattern.spikot.component.bean.BeanInstance
 import kr.heartpattern.spikot.util.catchAll
 import mu.KotlinLogging
 
@@ -42,7 +43,7 @@ private inline fun InterceptorRegistry.forEachInterceptorCatching(state: String,
 /**
  * Iterate all registered interceptor and call preEnable
  */
-fun InterceptorRegistry.preEnable(bean: Component) {
+fun InterceptorRegistry.preEnable(bean: BeanInstance<Component>) {
     forEachInterceptorCatching("pre enable") {
         it.preEnable(bean)
     }
@@ -51,7 +52,7 @@ fun InterceptorRegistry.preEnable(bean: Component) {
 /**
  * Iterate all registered interceptor and call postEnable
  */
-fun InterceptorRegistry.postEnable(bean: Component) {
+fun InterceptorRegistry.postEnable(bean: BeanInstance<Component>) {
     forEachInterceptorCatching("post enable") {
         it.postEnable(bean)
     }
@@ -60,7 +61,7 @@ fun InterceptorRegistry.postEnable(bean: Component) {
 /**
  * Iterate all registered interceptor and call preDisable
  */
-fun InterceptorRegistry.preDisable(bean: Component) {
+fun InterceptorRegistry.preDisable(bean: BeanInstance<Component>) {
     forEachInterceptorCatching("pre disable") {
         it.preDisable(bean)
     }
@@ -69,7 +70,7 @@ fun InterceptorRegistry.preDisable(bean: Component) {
 /**
  * Iterate all registered interceptor and call postDisable
  */
-fun InterceptorRegistry.postDisable(bean: Component) {
+fun InterceptorRegistry.postDisable(bean: BeanInstance<Component>) {
     forEachInterceptorCatching("post disable") {
         it.postDisable(bean)
     }

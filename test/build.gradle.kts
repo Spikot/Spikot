@@ -15,3 +15,11 @@ spigot {
 if (File(projectDir, "local.gradle.kts").exists()) {
     apply("local.gradle.kts")
 }
+
+tasks {
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+}

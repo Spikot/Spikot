@@ -17,33 +17,34 @@
 package kr.heartpattern.spikot.test
 
 import kr.heartpattern.spikot.component.Component
+import kr.heartpattern.spikot.component.bean.BeanInstance
 import kr.heartpattern.spikot.component.interceptor.Interceptor
-import kr.heartpattern.spikot.component.scopes.ServerBeanInterceptor
-import kr.heartpattern.spikot.component.scopes.ServerComponent
+import kr.heartpattern.spikot.component.scopes.server.ServerBeanInstance
+import kr.heartpattern.spikot.component.scopes.server.ServerBeanInterceptor
 
 @Interceptor
 object TestInterceptor : ServerBeanInterceptor {
-    override fun preLoad(bean: ServerComponent) {
-        println("pre load: $bean")
+    override fun preLoad(bean: ServerBeanInstance) {
+        println("pre load: ${bean.instance}")
     }
 
-    override fun postLoad(bean: ServerComponent) {
-        println("post load: $bean")
+    override fun postLoad(bean: ServerBeanInstance) {
+        println("post load: ${bean.instance}")
     }
 
-    override fun preEnable(bean: Component) {
-        println("pre enable: $bean")
+    override fun preEnable(bean: BeanInstance<Component>) {
+        println("pre enable: ${bean.instance}")
     }
 
-    override fun postEnable(bean: Component) {
-        println("post enable: $bean")
+    override fun postEnable(bean: BeanInstance<Component>) {
+        println("post enable: ${bean.instance}")
     }
 
-    override fun preDisable(bean: Component) {
-        println("pre disable: $bean")
+    override fun preDisable(bean: BeanInstance<Component>) {
+        println("pre disable: ${bean.instance}")
     }
 
-    override fun postDisable(bean: Component) {
-        println("post disable: $bean")
+    override fun postDisable(bean: BeanInstance<Component>) {
+        println("post disable: ${bean.instance}")
     }
 }

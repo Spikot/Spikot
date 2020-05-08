@@ -14,28 +14,14 @@
  *  limitations under the License.
  */
 
-package kr.heartpattern.spikot.component
+package kr.heartpattern.spikot.component.scopes.server
 
-import kr.heartpattern.spikot.SpikotPlugin
-import org.bukkit.event.Listener
+import kr.heartpattern.spikot.component.interceptor.BeanInterceptor
 
 /**
- * Component is a minimal fragment of plugin functionality. Component is same meaning with beans in spikot.
+ * Interceptor which can also intercept load state of [ServerComponent]
  */
-abstract class Component : Listener {
-    /**
-     * Owing plugin of component
-     */
-    lateinit var plugin: SpikotPlugin
-        internal set
-
-    /**
-     * Invoked when bean enabled and injection is done
-     */
-    open fun onEnable() {}
-
-    /**
-     * Invoked when bean is disabled
-     */
-    open fun onDisable() {}
+interface ServerBeanInterceptor : BeanInterceptor {
+    fun preLoad(bean: ServerBeanInstance) {}
+    fun postLoad(bean: ServerBeanInstance) {}
 }

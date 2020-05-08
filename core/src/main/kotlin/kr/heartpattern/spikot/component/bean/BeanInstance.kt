@@ -27,7 +27,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * Class wrapping bean [instance] owned by [plugin]
  */
-open class BeanInstance<T : Component>(
+open class BeanInstance<out T : Component>(
     val instance: T,
     val plugin: SpikotPlugin
 ) {
@@ -39,21 +39,21 @@ open class BeanInstance<T : Component>(
      * Enable bean and call interceptor
      */
     fun enable() {
-        UniversalInterceptorRegistry.preEnable(instance)
+        UniversalInterceptorRegistry.preEnable(this)
         logger.catchAll("Exception thrown while enabling component $instance") {
             instance.onEnable()
         }
-        UniversalInterceptorRegistry.postEnable(instance)
+        UniversalInterceptorRegistry.postEnable(this)
     }
 
     /**
      * Disable bean and call interceptor
      */
     fun disable() {
-        UniversalInterceptorRegistry.preDisable(instance)
+        UniversalInterceptorRegistry.preDisable(this)
         logger.catchAll("Exception thrown while disabling component $instance") {
             instance.onDisable()
         }
-        UniversalInterceptorRegistry.postDisable(instance)
+        UniversalInterceptorRegistry.postDisable(this)
     }
 }
