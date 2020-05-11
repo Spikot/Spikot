@@ -3,11 +3,13 @@ plugins {
     pluginBuild
     junitBuild
     kotlin("kapt")
+    kotlin("plugin.serialization")
     id("kr.entree.spigradle") version "1.2.2"
 }
 
 dependencies {
     api("org.reflections", "reflections", Version.reflections)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-runtime", Version.serialization)
 
     implementation(kotlin("reflect"))
 
