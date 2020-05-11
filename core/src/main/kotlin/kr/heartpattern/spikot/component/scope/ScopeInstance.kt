@@ -19,8 +19,8 @@ package kr.heartpattern.spikot.component.scope
 import kr.heartpattern.spikot.component.Component
 import kr.heartpattern.spikot.component.bean.*
 import kr.heartpattern.spikot.component.conditional.ConditionContext
+import kr.heartpattern.spikot.extension.catchAll
 import kr.heartpattern.spikot.reflection.getObjectInstanceOrCreate
-import kr.heartpattern.spikot.util.catchAll
 import mu.KotlinLogging
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName

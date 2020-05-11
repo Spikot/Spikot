@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package kr.heartpattern.spikot.util
+package kr.heartpattern.spikot.extension
 
 import mu.KLogger
 import kotlin.contracts.ExperimentalContracts

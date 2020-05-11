@@ -20,7 +20,7 @@ import kr.heartpattern.spikot.SpikotPlugin
 import kr.heartpattern.spikot.component.bean.BeanInstance
 import kr.heartpattern.spikot.component.interceptor.UniversalInterceptorRegistry
 import kr.heartpattern.spikot.component.interceptor.forEachInterceptor
-import kr.heartpattern.spikot.util.catchAll
+import kr.heartpattern.spikot.extension.catchAll
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
