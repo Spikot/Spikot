@@ -16,12 +16,11 @@
 
 package kr.heartpattern.spikot.component.conditionals
 
+import kr.heartpattern.spikot.component.bean.BeanDefinition
 import kr.heartpattern.spikot.component.conditional.Condition
 import kr.heartpattern.spikot.component.conditional.ConditionContext
 import kr.heartpattern.spikot.component.conditional.Conditional
-import kr.heartpattern.spikot.reflection.annotation.findMetaAnnotations
 import org.bukkit.Bukkit
-import kotlin.reflect.KClass
 
 /**
  * Load bean only if minecraft version of server is [version]
@@ -32,10 +31,10 @@ import kotlin.reflect.KClass
 annotation class VersionCondition(val version: String)
 
 private object ConditionVersion : Condition {
-    override fun check(bean: KClass<*>, context: ConditionContext): Boolean {
-        val annotations = bean.findMetaAnnotations<VersionCondition>()
+    override fun check(bean: BeanDefinition, context: ConditionContext): Boolean {
+        val targetVersion = bean.getAttribute(VersionCondition::class, "version") as String
         val version = Bukkit.getVersion()
 
-        return annotations.first().annotation.version == version
+        return targetVersion == version
     }
 }

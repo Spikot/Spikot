@@ -17,8 +17,12 @@
 package kr.heartpattern.spikot.component.bean
 
 import kr.heartpattern.spikot.SpikotPlugin
+import kr.heartpattern.spikot.component.exception.AnnotationNotFoundException
 import kr.heartpattern.spikot.reflection.annotation.MetaAnnotation
 import kr.heartpattern.spikot.reflection.annotation.findMetaAnnotations
+import kr.heartpattern.spikot.util.Either
+import kr.heartpattern.spikot.util.fold
+import kr.heartpattern.spikot.util.tryEither
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
@@ -30,6 +34,7 @@ open class BeanDefinition(
     val owingPlugin: SpikotPlugin
 ) {
     private val annotationCache: MutableMap<String, List<MetaAnnotation<*>>> = mutableMapOf()
+    private val attributeCache: MutableMap<AnnotationAttribute, Either<Throwable, Any>> = mutableMapOf()
 
     /**
      * Scan all meta annotated [T]. This function cache the result.
@@ -47,6 +52,18 @@ open class BeanDefinition(
             this.type.findMetaAnnotations(type)
         } as List<MetaAnnotation<T>>
     }
+
+    fun getAttribute(annotation: KClass<out Annotation>, attribute: String): Any {
+        return attributeCache.getOrPut(AnnotationAttribute(annotation, attribute)) {
+            tryEither {
+                (getMetaAnnotations(annotation).firstOrNull()
+                    ?: throw AnnotationNotFoundException(annotation))
+                    .getAttribute(attribute)
+            }
+        }.fold({ throw it }, { it })
+    }
+
+    private data class AnnotationAttribute(val annotation: KClass<*>, val attribute: String)
 }
 
 /**

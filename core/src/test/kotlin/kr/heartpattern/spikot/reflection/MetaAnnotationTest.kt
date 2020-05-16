@@ -16,6 +16,8 @@
 
 package kr.heartpattern.spikot.reflection
 
+import kr.heartpattern.spikot.reflection.annotation.AliasFor
+import kr.heartpattern.spikot.reflection.annotation.findMetaAnnotation
 import kr.heartpattern.spikot.reflection.annotation.findMetaAnnotations
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -30,12 +32,15 @@ private annotation class A
 @A
 @Target(1)
 @Retention(AnnotationRetention.RUNTIME)
-private annotation class B
+private annotation class B(@get:AliasFor(Target::class, "i") val c: Int)
 
 @Target(2)
 @A
-@B
+@B(5)
 class MyClass
+
+@B(5)
+class MyClass2
 
 class MetaAnnotationTest {
     @Test
@@ -44,5 +49,11 @@ class MetaAnnotationTest {
         val annotations = MyClass::class.findMetaAnnotations<Target>().toList().map { it.annotation.i }
 
         assertEquals(expected, annotations)
+    }
+
+    @Test
+    fun checkAliasFor() {
+        val value = MyClass2::class.findMetaAnnotation<Target>()!!.getAttribute("i")
+        assertEquals(5, value)
     }
 }

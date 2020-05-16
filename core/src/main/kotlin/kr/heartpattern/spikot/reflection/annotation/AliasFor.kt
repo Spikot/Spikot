@@ -14,16 +14,13 @@
  *  limitations under the License.
  */
 
-package kr.heartpattern.spikot.component.conditional
+package kr.heartpattern.spikot.reflection.annotation
 
-import kr.heartpattern.spikot.component.bean.BeanDefinition
+import kotlin.reflect.KClass
 
-/**
- * Determine whether bean should be loaded
- */
-interface Condition {
-    /**
-     * Check given [bean] should be loaded. Return true if bean should be loaded.
-     */
-    fun check(bean: BeanDefinition, context: ConditionContext): Boolean
-}
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.PROPERTY_GETTER)
+annotation class AliasFor(
+    val annotation: KClass<out Annotation>,
+    val attribute: String
+)

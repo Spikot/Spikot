@@ -41,7 +41,7 @@ val BeanDefinition.scope: ScopeDefinition?
  */
 fun BeanDefinition.checkCondition(context: ConditionContext): Boolean {
     for (annotation in type.findMetaAnnotations<Conditional>())
-        if (!UniversalSingleton[annotation.annotation.condition].check(type, context))
+        if (!UniversalSingleton[annotation.annotation.condition].check(this, context))
             return false
 
     return true

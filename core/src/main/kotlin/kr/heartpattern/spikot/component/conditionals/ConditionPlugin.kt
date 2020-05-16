@@ -16,12 +16,11 @@
 
 package kr.heartpattern.spikot.component.conditionals
 
+import kr.heartpattern.spikot.component.bean.BeanDefinition
 import kr.heartpattern.spikot.component.conditional.Condition
 import kr.heartpattern.spikot.component.conditional.ConditionContext
 import kr.heartpattern.spikot.component.conditional.Conditional
-import kr.heartpattern.spikot.reflection.annotation.findMetaAnnotations
 import org.bukkit.Bukkit
-import kotlin.reflect.KClass
 
 /**
  * Load bean only if all [plugins] is loaded
@@ -32,12 +31,13 @@ import kotlin.reflect.KClass
 annotation class PluginCondition(vararg val plugins: String)
 
 private object ConditionPlugin : Condition {
-    override fun check(bean: KClass<*>, context: ConditionContext): Boolean {
-        val annotations = bean.findMetaAnnotations<PluginCondition>()
+    override fun check(bean: BeanDefinition, context: ConditionContext): Boolean {
+        val annotations = bean.getMetaAnnotations<PluginCondition>()
         val pluginManager = Bukkit.getPluginManager()
 
+        @Suppress("UNCHECKED_CAST")
         for (annotation in annotations)
-            for (plugin in annotation.annotation.plugins)
+            for (plugin in annotation.getAttribute("plugins") as Array<String>)
                 if (!pluginManager.isPluginEnabled(plugin))
                     return false
 
