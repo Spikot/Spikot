@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-package kr.heartpattern.spikot.component.exception
+package kr.heartpattern.spikot.util
 
-import kotlin.reflect.KClass
+import org.bukkit.Bukkit
 
-data class AnnotationNotFoundException(val annotation: KClass<out Annotation>) : Exception()
+val MINECRAFT_VERSION = Bukkit.getVersion().substringAfter("(MC: ").substringBefore(")")

@@ -28,7 +28,7 @@ fun <T : Any> getAdapterOf(type: KClass<T>): T {
     return SpikotPlugin.allSpikotPlugins
         .asSequence()
         .flatMap { it.serverScopeBeanInstanceRegistry.beans.asSequence() }
-        .firstOrNull { type.isInstance(it) }
+        .firstOrNull { type.isInstance(it.instance) }
         ?.instance as? T
         ?: throw AdapterImplementationNotFoundException(type)
 }

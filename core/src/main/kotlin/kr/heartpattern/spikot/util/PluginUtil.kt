@@ -19,5 +19,5 @@ package kr.heartpattern.spikot.util
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 
-fun plugin(name: String): Plugin? = Bukkit.getPluginManager().getPlugin(name)
-inline fun <reified T : Plugin> plugin(): T? = Bukkit.getPluginManager().plugins.filterIsInstance<T>().firstOrNull()
+fun pluginOf(name: String): Plugin? = Bukkit.getPluginManager().getPlugin(name)
+inline fun <reified T : Plugin> pluginOf(): T? = Bukkit.getPluginManager().plugins.filterIsInstance<T>().firstOrNull()

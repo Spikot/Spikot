@@ -69,5 +69,6 @@ private fun <T : PlayerComponent> getPlayerBean(player: Player, type: KClass<T>)
     val scope = PlayerScopeHandler.scopes[player.uniqueId]
         ?: throw IllegalStateException("PlayerScope for ${player.name} is missing")
 
-    return scope.getBeanOfType(type) ?: throw IllegalArgumentException("${type.jvmName} not found in PlayerScope")
+    return scope.getBeanOfType(type)?.instance
+        ?: throw IllegalArgumentException("${type.jvmName} not found in PlayerScope")
 }

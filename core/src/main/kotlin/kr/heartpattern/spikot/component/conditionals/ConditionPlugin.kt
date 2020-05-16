@@ -38,7 +38,7 @@ private object ConditionPlugin : Condition {
         @Suppress("UNCHECKED_CAST")
         for (annotation in annotations)
             for (plugin in annotation.getAttribute("plugins") as Array<String>)
-                if (!pluginManager.isPluginEnabled(plugin))
+                if (kr.heartpattern.spikot.util.pluginOf(plugin) == null)
                     return false
 
         return true

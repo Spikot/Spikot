@@ -18,7 +18,11 @@ package kr.heartpattern.spikot.component.scopes.server
 
 import kr.heartpattern.spikot.SpikotPlugin
 import kr.heartpattern.spikot.component.Component
+import kr.heartpattern.spikot.component.bean.BeanDefinition
+import kr.heartpattern.spikot.component.bean.BeanInstance
 import kr.heartpattern.spikot.component.scope.ScopeInstance
+import kr.heartpattern.spikot.reflection.getObjectInstanceOrCreate
+import kotlin.reflect.full.isSubclassOf
 
 open class ServerScopeInstance(
     plugin: SpikotPlugin
@@ -31,5 +35,15 @@ open class ServerScopeInstance(
                 bean.load()
             }
         }
+    }
+
+    override fun instantiate(bean: BeanDefinition): BeanInstance<Component> {
+        return if (bean.type.isSubclassOf(ServerComponent::class))
+            ServerBeanInstance(
+                bean.type.getObjectInstanceOrCreate() as ServerComponent,
+                bean.owingPlugin
+            )
+        else
+            super.instantiate(bean)
     }
 }

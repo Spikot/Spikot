@@ -47,9 +47,9 @@ abstract class SpikotPlugin : JavaPlugin(), CoroutineScope {
     val classpathScanner: ClasspathScanner
     val beanDefinitionRegistry: BeanDefinitionRegistry
     val interceptorRegistry: InterceptorRegistry
-    private lateinit var serverScope: ServerScopeInstance
+    private lateinit var serverScopeInstance: ServerScopeInstance
     val serverScopeBeanInstanceRegistry: BeanInstanceRegistry<Component>
-        get() = serverScope
+        get() = serverScopeInstance
 
     init {
         logger.info("Start classpath scanning for $name")
@@ -71,28 +71,28 @@ abstract class SpikotPlugin : JavaPlugin(), CoroutineScope {
         UniversalClasspathScanner.addScanner(classpathScanner)
         logger.info("Total ${classpathScanner.getAllTypes().size} class found")
 
-        interceptorRegistry = PluginInterceptorRegistry(this)
-        UniversalInterceptorRegistry.addRegistry(interceptorRegistry)
-
         beanDefinitionRegistry = PluginBeanDefinitionRegistry(this)
         UniversalBeanDefinitionRegistry.addRegistry(beanDefinitionRegistry)
+
+        interceptorRegistry = PluginInterceptorRegistry(this)
+        UniversalInterceptorRegistry.addRegistry(interceptorRegistry)
     }
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main + CoroutinePlugin(this)
 
     final override fun onLoad() {
-        serverScope = ServerScopeInstance(this)
-        serverScope.load()
+        serverScopeInstance = ServerScopeInstance(this)
+        serverScopeInstance.load()
     }
 
     final override fun onEnable() {
-        serverScope.enable()
+        serverScopeInstance.enable()
     }
 
     final override fun onDisable() {
-        serverScope.disable()
-        UniversalBeanDefinitionRegistry.removeRegistry(beanDefinitionRegistry)
+        serverScopeInstance.disable()
         UniversalInterceptorRegistry.removeRegistry(interceptorRegistry)
+        UniversalBeanDefinitionRegistry.removeRegistry(beanDefinitionRegistry)
         UniversalClasspathScanner.removeScanner(classpathScanner)
         cancel(CancellationException("Plugin shutdown"))
     }

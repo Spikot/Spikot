@@ -20,7 +20,7 @@ import kr.heartpattern.spikot.component.bean.BeanDefinition
 import kr.heartpattern.spikot.component.conditional.Condition
 import kr.heartpattern.spikot.component.conditional.ConditionContext
 import kr.heartpattern.spikot.component.conditional.Conditional
-import org.bukkit.Bukkit
+import kr.heartpattern.spikot.util.MINECRAFT_VERSION
 
 /**
  * Load bean only if minecraft version of server is [version]
@@ -33,8 +33,6 @@ annotation class VersionCondition(val version: String)
 private object ConditionVersion : Condition {
     override fun check(bean: BeanDefinition, context: ConditionContext): Boolean {
         val targetVersion = bean.getAttribute(VersionCondition::class, "version") as String
-        val version = Bukkit.getVersion()
-
-        return targetVersion == version
+        return targetVersion == MINECRAFT_VERSION
     }
 }

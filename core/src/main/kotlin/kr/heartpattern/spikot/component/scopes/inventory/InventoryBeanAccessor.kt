@@ -67,5 +67,5 @@ fun <T : InventoryComponent> inventoryBeanDelegate(type: KClass<T>): ReadOnlyPro
 }
 
 private fun <T : InventoryComponent> getInventoryBean(player: Player, type: KClass<T>): T? {
-    return InventoryScopeHandler.scopes[player.uniqueId]?.getBeanOfType(type)
+    return InventoryScopeHandler.scopes[player.uniqueId]?.getBeanOfType(type)?.instance
 }
