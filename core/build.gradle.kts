@@ -1,3 +1,5 @@
+import kr.entree.spigradle.attribute.Load.STARTUP
+
 plugins {
     spigotBuild
     pluginBuild
@@ -20,7 +22,12 @@ dependencies {
 }
 
 spigot {
+    name = "Spikot"
     main = "kr.heartpattern.spikot.Spikot"
-    authors = listOf("HeartPattern")
+    version = project.version.toString()
+    description = "Spigot plugin framework for Kotlin"
     website = "https://github.com/Spikot/"
+    authors = listOf("HeartPattern")
+    load = STARTUP
+    prefix = "Spikot"
 }
