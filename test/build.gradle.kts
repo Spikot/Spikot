@@ -10,6 +10,7 @@ dependencies {
 
 spigot {
     main = "kr.heartpattern.spikot.test.TestPlugin"
+    depends = listOf("Spikot")
 }
 
 if (File(projectDir, "local.gradle.kts").exists()) {
