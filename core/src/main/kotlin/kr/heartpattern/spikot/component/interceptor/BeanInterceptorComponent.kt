@@ -16,9 +16,30 @@
 
 package kr.heartpattern.spikot.component.interceptor
 
+import kr.heartpattern.spikot.component.Component
+import kr.heartpattern.spikot.component.bean.BeanInstance
+
 /**
- * Register [BeanInterceptorComponent] to spikot automatically
+ * Intercept bean's lifecycle.
  */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Interceptor
+abstract class BeanInterceptorComponent : Component() {
+    /**
+     * Invoked before bean is enabled
+     */
+    open fun preEnable(bean: BeanInstance<Component>) {}
+
+    /**
+     * Invoked after bean is enabled
+     */
+    open fun postEnable(bean: BeanInstance<Component>) {}
+
+    /**
+     * Invoked before bean is disabled
+     */
+    open fun preDisable(bean: BeanInstance<Component>) {}
+
+    /**
+     * Invoked after bean is disabled
+     */
+    open fun postDisable(bean: BeanInstance<Component>) {}
+}

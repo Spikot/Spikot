@@ -26,13 +26,13 @@ private val logger = KotlinLogging.logger {}
 /**
  * Iterate all registered interceptor
  */
-inline fun InterceptorRegistry.forEachInterceptor(block: (BeanInterceptor) -> Unit) {
+inline fun InterceptorRegistry.forEachInterceptor(block: (BeanInterceptorComponent) -> Unit) {
     for (interceptor in getInterceptors()) {
         block(interceptor)
     }
 }
 
-private inline fun InterceptorRegistry.forEachInterceptorCatching(state: String, block: (BeanInterceptor) -> Unit) {
+private inline fun InterceptorRegistry.forEachInterceptorCatching(state: String, block: (BeanInterceptorComponent) -> Unit) {
     forEachInterceptor {
         logger.catchAll("Exception thrown while intercepting $state") {
             block(it)

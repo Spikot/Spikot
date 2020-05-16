@@ -16,12 +16,12 @@
 
 package kr.heartpattern.spikot.component.scopes.server
 
-import kr.heartpattern.spikot.component.interceptor.BeanInterceptor
+import kr.heartpattern.spikot.component.interceptor.BeanInterceptorComponent
 
 /**
  * Interceptor which can also intercept load state of [ServerComponent]
  */
-interface ServerBeanInterceptor : BeanInterceptor {
-    fun preLoad(bean: ServerBeanInstance) {}
-    fun postLoad(bean: ServerBeanInstance) {}
+abstract class ServerBeanInterceptorComponent : BeanInterceptorComponent() {
+    open fun preLoad(bean: ServerBeanInstance) {}
+    open fun postLoad(bean: ServerBeanInstance) {}
 }

@@ -16,9 +16,8 @@
 
 package kr.heartpattern.spikot.component.interceptor
 
-/**
- * Register [BeanInterceptorComponent] to spikot automatically
- */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Interceptor
+import kr.heartpattern.spikot.component.scope.ScopeDefinition
+
+object InterceptorScopeDefinition : ScopeDefinition {
+    override val name: String = "Interceptor"
+}

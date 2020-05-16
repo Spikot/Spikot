@@ -18,13 +18,13 @@ package kr.heartpattern.spikot.event
 
 import kr.heartpattern.spikot.component.Component
 import kr.heartpattern.spikot.component.bean.BeanInstance
-import kr.heartpattern.spikot.component.interceptor.BeanInterceptor
+import kr.heartpattern.spikot.component.interceptor.BeanInterceptorComponent
 import kr.heartpattern.spikot.component.interceptor.Interceptor
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 
 @Interceptor
-private object EventInterceptor : BeanInterceptor {
+private object EventInterceptor : BeanInterceptorComponent() {
     override fun postEnable(bean: BeanInstance<Component>) {
         Bukkit.getPluginManager().registerEvents(bean.instance, bean.plugin)
     }

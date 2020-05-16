@@ -16,10 +16,10 @@
 
 package kr.heartpattern.spikot.component.conditionals
 
+import kr.heartpattern.spikot.component.bean.BeanDefinition
 import kr.heartpattern.spikot.component.conditional.Condition
 import kr.heartpattern.spikot.component.conditional.ConditionContext
 import kr.heartpattern.spikot.component.conditional.Conditional
-import kotlin.reflect.KClass
 
 /**
  * Disable bean
@@ -30,7 +30,7 @@ import kotlin.reflect.KClass
 annotation class Disable
 
 private object DisableCondition : Condition {
-    override fun check(bean: KClass<*>, context: ConditionContext): Boolean {
+    override fun check(bean: BeanDefinition, context: ConditionContext): Boolean {
         return false
     }
 }

@@ -20,7 +20,7 @@ import kr.heartpattern.spikot.SpikotPlugin
 import kr.heartpattern.spikot.component.Component
 import kr.heartpattern.spikot.component.scope.ScopeInstance
 
-class ServerScopeInstance(
+open class ServerScopeInstance(
     plugin: SpikotPlugin
 ) : ScopeInstance<Component>(
     plugin.beanRegistry.getBeans(ServerScopeDefinition)

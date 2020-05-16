@@ -31,7 +31,7 @@ class ServerBeanInstance(
 ) : BeanInstance<ServerComponent>(instance, plugin) {
     fun load() {
         UniversalInterceptorRegistry.forEachInterceptor { interceptor ->
-            if (interceptor is ServerBeanInterceptor) {
+            if (interceptor is ServerBeanInterceptorComponent) {
                 logger.catchAll("Exception thrown while intercepting pre load") {
                     interceptor.preLoad(this)
                 }
@@ -43,7 +43,7 @@ class ServerBeanInstance(
         }
 
         UniversalInterceptorRegistry.forEachInterceptor { interceptor ->
-            if (interceptor is ServerBeanInterceptor) {
+            if (interceptor is ServerBeanInterceptorComponent) {
                 logger.catchAll("Exception thrown while intercepting post load") {
                     interceptor.postLoad(this)
                 }

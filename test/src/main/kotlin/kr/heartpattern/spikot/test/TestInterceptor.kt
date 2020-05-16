@@ -20,10 +20,10 @@ import kr.heartpattern.spikot.component.Component
 import kr.heartpattern.spikot.component.bean.BeanInstance
 import kr.heartpattern.spikot.component.interceptor.Interceptor
 import kr.heartpattern.spikot.component.scopes.server.ServerBeanInstance
-import kr.heartpattern.spikot.component.scopes.server.ServerBeanInterceptor
+import kr.heartpattern.spikot.component.scopes.server.ServerBeanInterceptorComponent
 
 @Interceptor
-object TestInterceptor : ServerBeanInterceptor {
+object TestInterceptor : ServerBeanInterceptorComponent() {
     override fun preLoad(bean: ServerBeanInstance) {
         println("pre load: ${bean.instance}")
     }

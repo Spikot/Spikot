@@ -17,9 +17,6 @@
 package kr.heartpattern.spikot.component.scopes.server
 
 import kr.heartpattern.spikot.component.scope.Scope
-import mu.KotlinLogging
-
-private val logger = KotlinLogging.logger {}
 
 /**
  * Annotate server scoped bean

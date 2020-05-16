@@ -17,68 +17,70 @@
 package kr.heartpattern.spikot.component.interceptor
 
 import kr.heartpattern.spikot.SpikotPlugin
-import kr.heartpattern.spikot.component.classpath.scanMetaAnnotated
-import kr.heartpattern.spikot.reflection.getObjectInstanceOrCreate
 import mu.KotlinLogging
 import java.util.*
-import kotlin.reflect.jvm.jvmName
 
 private val logger = KotlinLogging.logger {}
 
 /**
- * Set of [BeanInterceptor]
+ * Set of [BeanInterceptorComponent]
  */
 interface InterceptorRegistry {
     /**
-     * Get all registered [BeanInterceptor]
+     * Get all registered [BeanInterceptorComponent]
      */
-    fun getInterceptors(): Set<BeanInterceptor>
+    fun getInterceptors(): Set<BeanInterceptorComponent>
 
     /**
-     * Add new [BeanInterceptor]
+     * Add new [BeanInterceptorComponent]
      */
-    fun addInterceptor(interceptor: BeanInterceptor)
+    fun addInterceptor(interceptor: BeanInterceptorComponent)
 
     /**
-     * Remove [BeanInterceptor]
+     * Remove [BeanInterceptorComponent]
      */
-    fun removeInterceptor(interceptor: BeanInterceptor)
+    fun removeInterceptor(interceptor: BeanInterceptorComponent)
 }
 
 /**
  * Basic implementation of [InterceptorRegistry]
  */
 open class SimpleInterceptorRegistry : InterceptorRegistry {
-    private val registry = mutableSetOf<BeanInterceptor>()
+    private val registry = mutableSetOf<BeanInterceptorComponent>()
 
-    override fun getInterceptors(): Set<BeanInterceptor> {
+    override fun getInterceptors(): Set<BeanInterceptorComponent> {
         return registry
     }
 
-    override fun addInterceptor(interceptor: BeanInterceptor) {
+    override fun addInterceptor(interceptor: BeanInterceptorComponent) {
         registry.add(interceptor)
     }
 
-    override fun removeInterceptor(interceptor: BeanInterceptor) {
+    override fun removeInterceptor(interceptor: BeanInterceptorComponent) {
         registry.remove(interceptor)
     }
 }
 
 /**
- * Set of [BeanInterceptor] registered by [plugin]
+ * Set of [BeanInterceptorComponent] registered by [plugin]
  */
 class PluginInterceptorRegistry(
     private val plugin: SpikotPlugin
 ) : SimpleInterceptorRegistry() {
+    private val scopeInstance = InterceptorScopeInstance(plugin)
+
     init {
-        for (interceptor in plugin.classpathScanner.scanMetaAnnotated<Interceptor>()) {
-            val instance = interceptor.getObjectInstanceOrCreate() as? BeanInterceptor
-            if (instance == null) {
-                logger.warn { "${interceptor.jvmName} is annotated with @Interceptor but not a subtype of BeanInterceptor" }
-            } else {
-                addInterceptor(instance)
-            }
+        for (bean in scopeInstance.beans) {
+            addInterceptor(bean.instance)
         }
+    }
+
+    internal fun enable() {
+        scopeInstance.enable()
+    }
+
+    internal fun disable() {
+        scopeInstance.disable()
     }
 
     override fun toString(): String {
@@ -92,20 +94,20 @@ class PluginInterceptorRegistry(
 object UniversalInterceptorRegistry : InterceptorRegistry {
     private val registries = LinkedList<InterceptorRegistry>()
 
-    private var cached: Set<BeanInterceptor>? = null
+    private var cached: Set<BeanInterceptorComponent>? = null
 
-    override fun getInterceptors(): Set<BeanInterceptor> {
+    override fun getInterceptors(): Set<BeanInterceptorComponent> {
         if (cached == null) {
             cached = registries.flatMap { it.getInterceptors() }.toSet()
         }
         return cached!!
     }
 
-    override fun addInterceptor(interceptor: BeanInterceptor) {
+    override fun addInterceptor(interceptor: BeanInterceptorComponent) {
         throw UnsupportedOperationException("Add interceptor directly to UniversalInterceptorRegistry is not allowed")
     }
 
-    override fun removeInterceptor(interceptor: BeanInterceptor) {
+    override fun removeInterceptor(interceptor: BeanInterceptorComponent) {
         throw UnsupportedOperationException("Remove interceptor directly to UniversalInterceptorRegistry is not allowed")
     }
 
