@@ -80,3 +80,11 @@ inline fun <L> Either<L, *>.orLeftCompute(default: () -> L) = fold({ it }, { def
 
 fun <T> T.right() = Right(this)
 fun <T> T.left() = Left(this)
+
+inline fun <T> tryEither(block: () -> T): Either<Exception, T> {
+    return try {
+        Right(block())
+    } catch (e: Exception) {
+        Left(e)
+    }
+}
