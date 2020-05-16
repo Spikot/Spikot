@@ -28,7 +28,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * Registry of beans
  */
-interface BeanRegistry {
+interface BeanDefinitionRegistry {
     /**
      * Get registered bean of [scope]
      */
@@ -41,9 +41,9 @@ interface BeanRegistry {
 }
 
 /**
- * Basic implementation of [BeanRegistry]
+ * Basic implementation of [BeanDefinitionRegistry]
  */
-open class SimpleBeanRegistry : BeanRegistry {
+open class SimpleBeanDefinitionRegistry : BeanDefinitionRegistry {
     private val registry: MutableMap<String, MutableSet<BeanDefinition>> = mutableMapOf()
 
     override fun getBeans(scope: ScopeDefinition): BeanDefinitionSet {
@@ -58,9 +58,9 @@ open class SimpleBeanRegistry : BeanRegistry {
 /**
  * Registry of beans in plugin
  */
-class PluginBeanRegistry(
+class PluginBeanDefinitionRegistry(
     val plugin: SpikotPlugin
-) : SimpleBeanRegistry() {
+) : SimpleBeanDefinitionRegistry() {
     init {
         for (bean in plugin.classpathScanner.scanMetaAnnotated<Scope>()) {
             val definition = BeanDefinition(bean, plugin)
@@ -83,41 +83,41 @@ class PluginBeanRegistry(
 /**
  * Registry of all registered beans across the plugin
  */
-object UniversalBeanRegistry : BeanRegistry {
-    private val registries = LinkedList<BeanRegistry>()
+object UniversalBeanDefinitionRegistry : BeanDefinitionRegistry {
+    private val registries = LinkedList<BeanDefinitionRegistry>()
 
     /**
-     * Add [registry] to [UniversalBeanRegistry]
+     * Add [definitionRegistry] to [UniversalBeanDefinitionRegistry]
      */
-    fun addRegistry(registry: BeanRegistry) {
-        if (registry === this) {
+    fun addRegistry(definitionRegistry: BeanDefinitionRegistry) {
+        if (definitionRegistry === this) {
             throw IllegalArgumentException("Cannot add UniversalBeanRegistry")
         }
 
         for (registered in registries) {
-            if (registered === registry) {
-                logger.warn("Attempt to add registered registry: $registry")
+            if (registered === definitionRegistry) {
+                logger.warn("Attempt to add registered registry: $definitionRegistry")
                 return
             }
         }
 
-        registries.add(registry)
+        registries.add(definitionRegistry)
     }
 
     /**
-     * Remove [registry] from [UniversalBeanRegistry]
+     * Remove [definitionRegistry] from [UniversalBeanDefinitionRegistry]
      */
-    fun removeRegistry(registry: BeanRegistry) {
+    fun removeRegistry(definitionRegistry: BeanDefinitionRegistry) {
         val iterator = registries.iterator()
         while (iterator.hasNext()) {
             val registered = iterator.next()
-            if (registered === registry) {
+            if (registered === definitionRegistry) {
                 iterator.remove()
                 return
             }
         }
 
-        logger.warn("Attempt to remove unregistered registry: $registry")
+        logger.warn("Attempt to remove unregistered registry: $definitionRegistry")
     }
 
     override fun addBean(scope: ScopeDefinition, bean: BeanDefinition) {

@@ -14,22 +14,14 @@
  *  limitations under the License.
  */
 
-package kr.heartpattern.spikot.component.scopes.server
+package kr.heartpattern.spikot.component.bean
 
-import kr.heartpattern.spikot.SpikotPlugin
 import kr.heartpattern.spikot.component.Component
-import kr.heartpattern.spikot.component.scope.ScopeInstance
+import kotlin.reflect.KClass
 
-open class ServerScopeInstance(
-    plugin: SpikotPlugin
-) : ScopeInstance<Component>(
-    plugin.beanDefinitionRegistry.getBeans(ServerScopeDefinition)
-) {
-    fun load() {
-        for (bean in beans) {
-            if (bean is ServerBeanInstance) {
-                bean.load()
-            }
-        }
-    }
+interface BeanInstanceRegistry<T : Component> {
+    val beans: List<BeanInstance<T>>
+
+    fun <R : T> getBeanOfType(type: KClass<R>): BeanInstance<R>?
+    fun <R : T> getBeansOfSubType(type: KClass<R>): List<BeanInstance<R>>
 }

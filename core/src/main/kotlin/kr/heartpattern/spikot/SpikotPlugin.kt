@@ -17,9 +17,11 @@
 package kr.heartpattern.spikot
 
 import kotlinx.coroutines.*
-import kr.heartpattern.spikot.component.bean.BeanRegistry
-import kr.heartpattern.spikot.component.bean.PluginBeanRegistry
-import kr.heartpattern.spikot.component.bean.UniversalBeanRegistry
+import kr.heartpattern.spikot.component.Component
+import kr.heartpattern.spikot.component.bean.BeanDefinitionRegistry
+import kr.heartpattern.spikot.component.bean.BeanInstanceRegistry
+import kr.heartpattern.spikot.component.bean.PluginBeanDefinitionRegistry
+import kr.heartpattern.spikot.component.bean.UniversalBeanDefinitionRegistry
 import kr.heartpattern.spikot.component.classpath.AllClassScanner
 import kr.heartpattern.spikot.component.classpath.ClasspathScanner
 import kr.heartpattern.spikot.component.classpath.ReflectionsClasspathScanner
@@ -43,9 +45,11 @@ import kotlin.coroutines.CoroutineContext
 @Suppress("LeakingThis")
 abstract class SpikotPlugin : JavaPlugin(), CoroutineScope {
     val classpathScanner: ClasspathScanner
-    val beanRegistry: BeanRegistry
+    val beanDefinitionRegistry: BeanDefinitionRegistry
     val interceptorRegistry: InterceptorRegistry
     private lateinit var serverScope: ServerScopeInstance
+    val serverScopeBeanInstanceRegistry: BeanInstanceRegistry<Component>
+        get() = serverScope
 
     init {
         logger.info("Start classpath scanning for $name")
@@ -70,9 +74,8 @@ abstract class SpikotPlugin : JavaPlugin(), CoroutineScope {
         interceptorRegistry = PluginInterceptorRegistry(this)
         UniversalInterceptorRegistry.addRegistry(interceptorRegistry)
 
-        beanRegistry = PluginBeanRegistry(this)
-        UniversalBeanRegistry.addRegistry(beanRegistry)
-
+        beanDefinitionRegistry = PluginBeanDefinitionRegistry(this)
+        UniversalBeanDefinitionRegistry.addRegistry(beanDefinitionRegistry)
     }
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main + CoroutinePlugin(this)
@@ -88,9 +91,14 @@ abstract class SpikotPlugin : JavaPlugin(), CoroutineScope {
 
     final override fun onDisable() {
         serverScope.disable()
-        UniversalBeanRegistry.removeRegistry(beanRegistry)
+        UniversalBeanDefinitionRegistry.removeRegistry(beanDefinitionRegistry)
         UniversalInterceptorRegistry.removeRegistry(interceptorRegistry)
         UniversalClasspathScanner.removeScanner(classpathScanner)
         cancel(CancellationException("Plugin shutdown"))
+    }
+
+    companion object {
+        val allSpikotPlugins: List<SpikotPlugin>
+            get() = Bukkit.getPluginManager().plugins.filterIsInstance<SpikotPlugin>()
     }
 }

@@ -17,7 +17,7 @@
 package kr.heartpattern.spikot.component.scopes.inventory
 
 import kr.heartpattern.spikot.component.Component
-import kr.heartpattern.spikot.component.bean.UniversalBeanRegistry
+import kr.heartpattern.spikot.component.bean.UniversalBeanDefinitionRegistry
 import kr.heartpattern.spikot.component.scopes.server.ServerScope
 import mu.KotlinLogging
 import org.bukkit.entity.Player
@@ -40,7 +40,7 @@ internal object InventoryScopeHandler : Component() {
             throw IllegalStateException("New inventory is opened while previous inventory does not closed")
 
         val scope = InventoryScopeInstance(
-            UniversalBeanRegistry.getBeans(InventoryScopeDefinition),
+            UniversalBeanDefinitionRegistry.getBeans(InventoryScopeDefinition),
             player as Player,
             inventory
         )

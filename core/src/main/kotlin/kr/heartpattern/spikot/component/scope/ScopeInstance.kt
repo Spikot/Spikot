@@ -32,7 +32,7 @@ private val logger = KotlinLogging.logger {}
  */
 open class ScopeInstance<T : Component>(
     beans: BeanDefinitionSet
-) {
+) : BeanInstanceRegistry<T> {
     private val _beans: Map<String, BeanInstance<T>> by lazy {
         beans.asSequence()
             .filter { it.checkCondition(ConditionContext(it.owingPlugin)) }
@@ -46,12 +46,17 @@ open class ScopeInstance<T : Component>(
             .toMap()
     }
 
-    val beans: List<BeanInstance<T>>
+    override val beans: List<BeanInstance<T>>
         get() = _beans.values.toList()
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getBeanOfType(type: KClass<T>): T? {
-        return _beans[type.jvmName]?.instance as T?
+    override fun <R : T> getBeanOfType(type: KClass<R>): BeanInstance<R>? {
+        return _beans[type.jvmName] as BeanInstance<R>?
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <R : T> getBeansOfSubType(type: KClass<R>): List<BeanInstance<R>> {
+        return beans.filter { type.isInstance(it.instance) } as List<BeanInstance<R>>
     }
 
     /**

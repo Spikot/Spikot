@@ -17,7 +17,7 @@
 package kr.heartpattern.spikot.component.scopes.player
 
 import kr.heartpattern.spikot.component.Component
-import kr.heartpattern.spikot.component.bean.UniversalBeanRegistry
+import kr.heartpattern.spikot.component.bean.UniversalBeanDefinitionRegistry
 import kr.heartpattern.spikot.component.scopes.server.ServerScope
 import mu.KotlinLogging
 import org.bukkit.event.EventHandler
@@ -34,7 +34,7 @@ internal object PlayerScopeHandler : Component() {
     @EventHandler
     fun PlayerJoinEvent.onJoin() {
         val scope = PlayerScopeInstance(
-            UniversalBeanRegistry.getBeans(PlayerScopeDefinition),
+            UniversalBeanDefinitionRegistry.getBeans(PlayerScopeDefinition),
             player
         )
 

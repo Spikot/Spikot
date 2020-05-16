@@ -22,5 +22,5 @@ import kr.heartpattern.spikot.component.scope.ScopeInstance
 open class InterceptorScopeInstance(
     plugin: SpikotPlugin
 ) : ScopeInstance<BeanInterceptorComponent>(
-    plugin.beanRegistry.getBeans(InterceptorScopeDefinition)
+    plugin.beanDefinitionRegistry.getBeans(InterceptorScopeDefinition)
 )
