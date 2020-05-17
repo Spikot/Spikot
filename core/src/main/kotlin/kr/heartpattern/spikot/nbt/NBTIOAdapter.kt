@@ -1,5 +1,3 @@
-import org.gradle.api.artifacts.dsl.DependencyHandler
-
 /*
  * Copyright 2020 Spikot project authors
  *
@@ -16,9 +14,19 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
  *  limitations under the License.
  */
 
-@Suppress("unused")
-fun DependencyHandler.kotlinx(module: String, version: String? = null): Any =
-    "org.jetbrains.kotlinx:kotlinx-$module${version?.let { ":$version" } ?: ""}"
+package kr.heartpattern.spikot.nbt
 
-fun DependencyHandler.spigot(version: String): Any =
-    "org.spigotmc:spigot:$version"
+import kr.heartpattern.spikot.adapter.getAdapterOf
+import java.io.DataInputStream
+import java.io.DataOutput
+import java.io.InputStream
+import java.io.OutputStream
+
+interface NBTIOAdapter {
+    fun readCompressed(input: InputStream): CompoundTag
+    fun writeCompressed(tag: CompoundTag, output: OutputStream)
+    fun read(input: DataInputStream): CompoundTag
+    fun write(tag: CompoundTag, output: DataOutput)
+
+    companion object Impl : NBTIOAdapter by getAdapterOf()
+}

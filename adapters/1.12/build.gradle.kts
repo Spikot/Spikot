@@ -1,5 +1,3 @@
-import org.gradle.api.artifacts.dsl.DependencyHandler
-
 /*
  * Copyright 2020 Spikot project authors
  *
@@ -16,9 +14,11 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
  *  limitations under the License.
  */
 
-@Suppress("unused")
-fun DependencyHandler.kotlinx(module: String, version: String? = null): Any =
-    "org.jetbrains.kotlinx:kotlinx-$module${version?.let { ":$version" } ?: ""}"
+plugins {
+    baseBuild
+}
 
-fun DependencyHandler.spigot(version: String): Any =
-    "org.spigotmc:spigot:$version"
+dependencies {
+    compileOnly(project(":core"))
+    compileOnly(spigot("1.12.2-R0.1-SNAPSHOT"))
+}
