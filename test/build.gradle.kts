@@ -9,7 +9,7 @@ dependencies {
 }
 
 spigot {
-    main = "kr.heartpattern.spikot.test.TestPlugin"
+    main = "io.heartpattern.spikot.test.TestPlugin"
     depends = listOf("Spikot")
 }
 

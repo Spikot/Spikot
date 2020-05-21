@@ -27,7 +27,7 @@ tasks {
 
             file.writeText("""
                 name: Spikot
-                main: kr.heartpattern.spikot.Spikot
+                main: io.heartpattern.spikot.Spikot
                 version: ${project.version}
                 description: Spigot plugin framework for Kotlin
                 website: https://github.com/Spikot/
