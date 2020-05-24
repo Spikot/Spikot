@@ -30,11 +30,11 @@ import java.io.OutputStream
 @Adapter(adapterOf = NBTIOAdapter::class, version = "1.12.2")
 object NBTIOAdapterImpl : Component(), NBTIOAdapter {
     override fun read(input: DataInputStream): CompoundTag {
-        return io.heartpattern.spikot.adapters.v1_12.nbt.NBTAdapterImpl.wrapCompoundTag(NBTCompressedStreamTools.a(input))
+        return NBTAdapterImpl.wrapCompoundTag(NBTCompressedStreamTools.a(input))
     }
 
     override fun readCompressed(input: InputStream): CompoundTag {
-        return io.heartpattern.spikot.adapters.v1_12.nbt.NBTAdapterImpl.wrapCompoundTag(NBTCompressedStreamTools.a(input))
+        return NBTAdapterImpl.wrapCompoundTag(NBTCompressedStreamTools.a(input))
     }
 
     override fun write(tag: CompoundTag, output: DataOutput) {

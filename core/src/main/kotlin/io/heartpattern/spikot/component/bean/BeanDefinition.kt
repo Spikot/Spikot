@@ -20,9 +20,9 @@ import io.heartpattern.spikot.SpikotPlugin
 import io.heartpattern.spikot.component.exception.AnnotationNotFoundException
 import io.heartpattern.spikot.reflection.annotation.MetaAnnotation
 import io.heartpattern.spikot.reflection.annotation.findMetaAnnotations
-import io.heartpattern.spikot.util.Either
-import io.heartpattern.spikot.util.fold
-import io.heartpattern.spikot.util.tryEither
+import io.heartpattern.spikot.type.Either
+import io.heartpattern.spikot.type.fold
+import io.heartpattern.spikot.type.tryEither
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 

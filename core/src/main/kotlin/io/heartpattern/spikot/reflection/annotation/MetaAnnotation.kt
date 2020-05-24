@@ -19,6 +19,7 @@ package io.heartpattern.spikot.reflection.annotation
 import io.heartpattern.spikot.reflection.withAccessibility
 import java.util.*
 import kotlin.collections.HashSet
+import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
@@ -65,7 +66,7 @@ data class MetaAnnotation<T : Annotation>(
  * Sequence of found annotation is sorted in depth.
  * Each annotation is checked once, therefore if annotation is found multiple time, only the most shallow thing is handled.
  */
-inline fun <reified T : Annotation> KClass<*>.findMetaAnnotations(): List<MetaAnnotation<T>> {
+inline fun <reified T : Annotation> KAnnotatedElement.findMetaAnnotations(): List<MetaAnnotation<T>> {
     return findMetaAnnotations(T::class)
 }
 
@@ -75,7 +76,7 @@ inline fun <reified T : Annotation> KClass<*>.findMetaAnnotations(): List<MetaAn
  * Sequence of found annotation is sorted in depth.
  * Each annotation is checked once, therefore if annotation is found multiple time, only the most shallow thing is handled.
  */
-fun <T : Annotation> KClass<*>.findMetaAnnotations(annotationType: KClass<T>): List<MetaAnnotation<T>> {
+fun <T : Annotation> KAnnotatedElement.findMetaAnnotations(annotationType: KClass<T>): List<MetaAnnotation<T>> {
     val searchQueue = LinkedList<MetaAnnotation<*>>()
     val visited = HashSet<String>()
     val result = LinkedList<MetaAnnotation<T>>()
@@ -105,7 +106,7 @@ fun <T : Annotation> KClass<*>.findMetaAnnotations(annotationType: KClass<T>): L
  * This class find annotation recursively, which means [T] annotating some annotation which annotate [this] is also found by this method.
  * Returning annotation is the most shallow depth annotation.
  */
-inline fun <reified T : Annotation> KClass<*>.findMetaAnnotation(): MetaAnnotation<T>? {
+inline fun <reified T : Annotation> KAnnotatedElement.findMetaAnnotation(): MetaAnnotation<T>? {
     return findMetaAnnotation(T::class)
 }
 
@@ -114,7 +115,7 @@ inline fun <reified T : Annotation> KClass<*>.findMetaAnnotation(): MetaAnnotati
  * This class find annotation recursively, which means [T] annotating some annotation which annotate [this] is also found by this method.
  * Returning annotation is the most shallow depth annotation.
  */
-fun <T : Annotation> KClass<*>.findMetaAnnotation(annotationType: KClass<T>): MetaAnnotation<T>? {
+fun <T : Annotation> KAnnotatedElement.findMetaAnnotation(annotationType: KClass<T>): MetaAnnotation<T>? {
     val searchQueue = LinkedList<MetaAnnotation<*>>()
     val visited = HashSet<String>()
 

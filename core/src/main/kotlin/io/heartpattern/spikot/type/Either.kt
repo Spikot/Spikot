@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package io.heartpattern.spikot.util
+package io.heartpattern.spikot.type
 
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract

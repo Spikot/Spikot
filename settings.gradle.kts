@@ -11,4 +11,3 @@ include("plugin")
 
 // Test
 include("test")
-include("command")

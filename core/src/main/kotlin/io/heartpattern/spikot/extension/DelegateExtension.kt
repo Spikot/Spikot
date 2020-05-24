@@ -18,6 +18,7 @@ package io.heartpattern.spikot.extension
 
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
 /**
@@ -44,4 +45,12 @@ fun <R, T> ReadWriteProperty<R, T?>.nonnull(): ReadWriteProperty<R, T> {
             return this@nonnull.setValue(thisRef, property, value)
         }
     }
+}
+
+operator fun <R> KMutableProperty0<R>.getValue(thisRef: Any?, property: KProperty<*>): R {
+    return this.get()
+}
+
+operator fun <R> KMutableProperty0<R>.setValue(thisRef: Any?, property: KProperty<*>, value: R) {
+    this.set(value)
 }

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package io.heartpattern.spikot.util
+package io.heartpattern.spikot.type
 
 data class PriorityValue<T>(val priority: Int, val value: T) {
     operator fun compareTo(other: PriorityValue<*>): Int {

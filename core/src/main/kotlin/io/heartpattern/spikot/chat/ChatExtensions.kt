@@ -20,16 +20,29 @@ import net.md_5.bungee.api.ChatMessageType
 import org.bukkit.entity.Player
 
 val chat
-    get() = ChatBuilder()
+    get() = FancyChat()
 
-fun Player.sendMessage(builder: ChatBuilder) {
+fun Player.sendMessage(builder: FancyChat) {
     spigot().sendMessage(ChatMessageType.CHAT, *builder.build())
 }
 
-fun Player.sendActionBar(builder: ChatBuilder) {
+fun Player.sendActionBar(builder: FancyChat) {
     spigot().sendMessage(ChatMessageType.ACTION_BAR, *builder.build())
 }
 
-fun Player.sendSystem(builder: ChatBuilder) {
+fun Player.sendSystem(builder: FancyChat) {
     spigot().sendMessage(ChatMessageType.SYSTEM, *builder.build())
+}
+
+fun List<FancyChat>.joinToLine(): FancyChat {
+    if (size == 0)
+        return chat
+
+    val iter = iterator()
+    val first = iter.next().copy()
+    while (iter.hasNext()) {
+        first.resetAll("\n")(iter.next())
+    }
+
+    return first
 }

@@ -18,32 +18,27 @@ package io.heartpattern.spikot.chat
 
 import io.heartpattern.spikot.item.saveToTag
 import net.md_5.bungee.api.ChatColor.*
-import net.md_5.bungee.api.chat.BaseComponent
-import net.md_5.bungee.api.chat.ClickEvent
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.*
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-typealias FancyChat = Array<BaseComponent>
-
 /**
  * Chat builder dsl
  */
-class ChatBuilder internal constructor() {
+class FancyChat internal constructor() {
     private val components = LinkedList<BaseComponent>()
     private var last: TextComponent = TextComponent("")
 
-    private inline fun execute(block: TextComponent.() -> Unit): ChatBuilder {
+    private inline fun execute(block: TextComponent.() -> Unit): FancyChat {
         last.block()
         return this
     }
 
-    private inline fun executeAppend(block: TextComponent.() -> Unit): ChatBuilder {
+    private inline fun executeAppend(block: TextComponent.() -> Unit): FancyChat {
         last.block()
         components.add(last)
-        last = TextComponent("")
+        last = TextComponent()
         last.copyFormatting(components.last())
         return this
     }
@@ -182,7 +177,7 @@ class ChatBuilder internal constructor() {
         hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, text)
     }
 
-    fun hoverText(text: ChatBuilder) = execute {
+    fun hoverText(text: FancyChat) = execute {
         hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, text.build())
     }
 
@@ -208,6 +203,37 @@ class ChatBuilder internal constructor() {
         this@executeAppend.text = text
     }
 
+    operator fun invoke(text: FancyChat): FancyChat {
+        components.addAll(text.components)
+        last = TextComponent()
+        last.copyFormatting(components.last)
+        return this
+    }
 
-    fun build(): FancyChat = components.toTypedArray()
+    operator fun get(text: FancyChat): FancyChat {
+        components.addAll(text.components)
+        return this
+    }
+
+    fun setAll(
+        retention: ComponentBuilder.FormatRetention = ComponentBuilder.FormatRetention.ALL,
+        replace: Boolean = true,
+        configure: FancyChat.() -> Unit
+    ): FancyChat {
+        val fancy = FancyChat()
+        fancy.configure()
+        components.forEach {
+            it.copyFormatting(fancy.last, retention, replace)
+        }
+        return this
+    }
+
+    fun copy(): FancyChat {
+        val copied = FancyChat()
+        copied.components.addAll(components)
+        copied.last = TextComponent(last)
+        return copied
+    }
+
+    fun build(): Array<BaseComponent> = components.toTypedArray()
 }
