@@ -3,7 +3,7 @@ plugins {
 }
 
 repositories {
-    maven("https://maven.heartpattern.kr/repository/maven-public/")
+    maven("https://maven.heartpattern.io/repository/maven-public/")
 }
 
 dependencies {

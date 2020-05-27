@@ -1,0 +1,37 @@
+/*
+ * Copyright 2020 Spikot project authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package io.heartpattern.spikot.command.predef
+
+import io.heartpattern.spikot.chat.chat
+import io.heartpattern.spikot.chat.sendMessage
+import io.heartpattern.spikot.command.failure.CommandFailure
+import io.heartpattern.spikot.command.failure.NoSuchCommandFailure
+import io.heartpattern.spikot.command.failure.SubscribeCommandFailure
+import io.heartpattern.spikot.component.Component
+import io.heartpattern.spikot.component.scopes.server.ServerScope
+
+@ServerScope
+private object DefaultCommandFailureHandler : Component() {
+    @SubscribeCommandFailure(NoSuchCommandFailure::class)
+    fun onCommandNotFound(failure: CommandFailure<NoSuchCommandFailure>) {
+        val (context, node, _) = failure
+        with(context.sender) {
+            sendMessage(chat.red("No such command: /${context.label} ${context.arguments.joinToString(" ")}"))
+
+        }
+    }
+}

@@ -13,17 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import java.net.URL
 
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.dokka")
-    `maven-publish`
 }
 
-repositories {
-    maven("https://maven.heartpattern.kr/repository/maven-public/")
-}
+apply(plugin = "mavenBuild")
 
 dependencies {
     api(kotlin("stdlib"))
@@ -32,62 +27,10 @@ dependencies {
 }
 
 tasks {
-    test {
-        useJUnitPlatform()
-    }
-
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             jvmTarget = "1.8"
             freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-        }
-    }
-
-    create<Jar>("dokkaJar") {
-        group = JavaBasePlugin.DOCUMENTATION_GROUP
-        archiveClassifier.set("javadoc")
-        from(dokka)
-    }
-
-    create<Jar>("sourcesJar") {
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
-    }
-
-    dokka {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/kdoc/"
-        configuration {
-            externalDocumentationLink {
-                url = URL("https://hub.spigotmc.org/javadocs/spigot/")
-                packageListUrl = URL("https://hub.spigotmc.org/javadocs/spigot/package-list")
-            }
-        }
-    }
-}
-
-if ("maven.user" in properties && "maven.password" in properties) {
-    publishing {
-        publications {
-            create<MavenPublication>("maven") {
-                artifactId = project.name
-                from(components["java"])
-                artifact(tasks["dokkaJar"])
-                artifact(tasks["sourcesJar"])
-            }
-        }
-        repositories {
-            maven(
-                if (version.toString().endsWith("SNAPSHOT"))
-                    "https://maven.heartpattern.kr/repository/spikot-snapshots/"
-                else
-                    "https://maven.heartpattern.kr/repository/spikot-releases/"
-            ) {
-                credentials {
-                    username = properties["maven.user"] as String
-                    password = properties["maven.password"] as String
-                }
-            }
         }
     }
 }
