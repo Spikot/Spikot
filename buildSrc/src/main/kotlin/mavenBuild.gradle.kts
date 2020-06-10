@@ -56,7 +56,7 @@ if ("maven.user" in properties && "maven.password" in properties) {
             create<MavenPublication>("maven") {
                 val path = project.path
                 artifactId = when {
-                    path.startsWith(":components") -> path.substring(11)
+                    path.startsWith(":modules") -> path.substring(8)
                     path.startsWith(":packages") -> path.substring(9)
                     else -> path
                 }.replace(':', '-').substring(1)

@@ -14,23 +14,12 @@
  *  limitations under the License.
  */
 
-object Version {
-    // Kotlins
-    val kotlin = "1.3.70"
-    val coroutine = "1.3.5"
-    val serialization = "0.20.0"
+plugins {
+    baseBuild
+    spigotBuild
+}
 
-    // MineCrafts
-    val spigot = "1.15.2-R0.1-SNAPSHOT"
-    val plugin_annotations = "1.2.2-SNAPSHOT"
-
-    // Tests
-    val junit_jupyter = "5.6.1"
-    val mockk: String = "1.9.3"
-
-    // Others
-    val reflections = "0.9.12"
-    val kotlin_logging = "1.7.8"
-    val slf4j_bridge = "1.7.30"
-    val `auto-service` = "1.0-rc6"
+dependencies {
+    api(modules("core"))
+    api(modules("annotation"))
 }

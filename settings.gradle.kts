@@ -1,6 +1,6 @@
 rootProject.name = "Spikot"
 
-val components = listOf(
+val modules = listOf(
     "core",
     "command",
     "command:predef",
@@ -31,7 +31,7 @@ val examples = listOf(
 )
 
 val allProjects = mapOf(
-    "components" to components,
+    "modules" to modules,
     "adapters" to adapters,
     "packages" to packages,
     "examples" to examples

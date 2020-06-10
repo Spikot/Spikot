@@ -13,7 +13,7 @@ val shade = configurations.create("shade")
 
 dependencies {
     subprojects {
-        if (path.startsWith(":components:") || path.startsWith(":adapters:"))
+        if (path.startsWith(":modules:") || path.startsWith(":adapters:"))
             shade(this@subprojects)
     }
 }

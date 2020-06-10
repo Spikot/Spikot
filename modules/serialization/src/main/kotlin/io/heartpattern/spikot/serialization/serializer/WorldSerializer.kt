@@ -14,23 +14,21 @@
  *  limitations under the License.
  */
 
-object Version {
-    // Kotlins
-    val kotlin = "1.3.70"
-    val coroutine = "1.3.5"
-    val serialization = "0.20.0"
+package io.heartpattern.spikot.serialization.serializer
 
-    // MineCrafts
-    val spigot = "1.15.2-R0.1-SNAPSHOT"
-    val plugin_annotations = "1.2.2-SNAPSHOT"
+import kotlinx.serialization.*
+import org.bukkit.Bukkit
+import org.bukkit.World
+import java.util.*
 
-    // Tests
-    val junit_jupyter = "5.6.1"
-    val mockk: String = "1.9.3"
+object WorldSerializer : KSerializer<World> {
+    override val descriptor: SerialDescriptor = PrimitiveDescriptor("org.bukkit.World", PrimitiveKind.STRING)
 
-    // Others
-    val reflections = "0.9.12"
-    val kotlin_logging = "1.7.8"
-    val slf4j_bridge = "1.7.30"
-    val `auto-service` = "1.0-rc6"
+    override fun serialize(encoder: Encoder, value: World) {
+        encoder.encodeString(value.uid.toString())
+    }
+
+    override fun deserialize(decoder: Decoder): World {
+        return Bukkit.getWorld(UUID.fromString(decoder.decodeString()))!!
+    }
 }

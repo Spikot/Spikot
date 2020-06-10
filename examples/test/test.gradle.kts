@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-    implementation(component("core"))
-    implementation(component("command"))
-    implementation(component("command:predef"))
+    implementation(modules("core"))
+    implementation(modules("command"))
+    implementation(modules("command:predef"))
     implementation("org.spigotmc", "spigot-api", "1.12.2-R0.1-SNAPSHOT")
 }
 

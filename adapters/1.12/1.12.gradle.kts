@@ -19,13 +19,13 @@ plugins {
 }
 
 dependencies {
-    api(component("core"))
-    api(component("adapter"))
-    api(component("command"))
-    api(component("item"))
-    api(component("nbt"))
+    api(modules("core"))
+    api(modules("adapter"))
+    api(modules("command"))
+    api(modules("item"))
+    api(modules("nbt"))
 
-    implementation(component("reflection"))
+    implementation(modules("reflection"))
 
     compileOnly(spigot("1.12.2-R0.1-SNAPSHOT"))
 }

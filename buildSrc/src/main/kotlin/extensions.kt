@@ -21,10 +21,11 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 fun DependencyHandler.kotlinx(module: String, version: String? = null): Any =
     "org.jetbrains.kotlinx:kotlinx-$module${version?.let { ":$version" } ?: ""}"
 
+@Suppress("unused")
 fun DependencyHandler.spigot(version: String): Any =
     "org.spigotmc:spigot:$version"
 
-fun Project.component(module: String): Project = project(":components:$module")
-fun Project.example(module: String): Project = project(":examples:$module")
+fun Project.modules(module: String): Project = project(":modules:$module")
+fun Project.examples(module: String): Project = project(":examples:$module")
 fun Project.packages(module: String): Project = project(":packages:$module")
-fun Project.adapter(module: String): Project = project(":adapters:$module")
+fun Project.adapters(module: String): Project = project(":adapters:$module")

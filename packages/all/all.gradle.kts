@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     rootProject.allprojects {
-        if (path.startsWith(":components:")) {
+        if (path.startsWith(":modules:")) {
             api(this)
         }
     }
