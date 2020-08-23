@@ -1,103 +1,148 @@
 /*
- * Copyright 2020 Spikot project authors
+ * Copyright (c) 2020 HeartPattern and Spikot authors
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package io.heartpattern.spikot
 
-import io.heartpattern.spikot.component.Component
-import io.heartpattern.spikot.component.bean.BeanDefinitionRegistry
-import io.heartpattern.spikot.component.bean.BeanInstanceRegistry
-import io.heartpattern.spikot.component.bean.PluginBeanDefinitionRegistry
-import io.heartpattern.spikot.component.bean.UniversalBeanDefinitionRegistry
-import io.heartpattern.spikot.component.classpath.AllClassScanner
-import io.heartpattern.spikot.component.classpath.ClasspathScanner
-import io.heartpattern.spikot.component.classpath.ReflectionsClasspathScanner
-import io.heartpattern.spikot.component.classpath.UniversalClasspathScanner
-import io.heartpattern.spikot.component.interceptor.InterceptorRegistry
-import io.heartpattern.spikot.component.interceptor.PluginInterceptorRegistry
-import io.heartpattern.spikot.component.interceptor.UniversalInterceptorRegistry
-import io.heartpattern.spikot.component.scopes.server.ServerScopeInstance
+import io.heartpattern.spikot.bean.EarlyLoad
+import io.heartpattern.spikot.bean.definition.BeanDefinition
+import io.heartpattern.spikot.bean.definition.BeanDefinitionRegistry
+import io.heartpattern.spikot.bean.definition.ClasspathBeanDefinitionRegistry
+import io.heartpattern.spikot.classpath.Classpath
+import io.heartpattern.spikot.classpath.JavaPluginClasspath
+import io.heartpattern.spikot.extension.catchAll
+import io.heartpattern.spikot.scope.BeanDefinitionRegistryScopeInstance
+import io.heartpattern.spikot.scope.beanDefinitionRegistryScope
+import io.heartpattern.spikot.type.TypedMap
+import io.heartpattern.spikot.util.pluginOf
 import kotlinx.coroutines.*
+import mu.KotlinLogging
 import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import org.reflections.Reflections
-import org.reflections.scanners.TypeAnnotationsScanner
-import org.reflections.util.ConfigurationBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+
+private val spikotLogger = KotlinLogging.logger {}
 
 /**
  * Main class of plugin which use Spikot.
  * Plugin developer should extends this class instead of [JavaPlugin]
  */
-@Suppress("LeakingThis")
-abstract class SpikotPlugin : JavaPlugin(), CoroutineScope {
-    val classpathScanner: ClasspathScanner
-    val beanDefinitionRegistry: BeanDefinitionRegistry
-    val interceptorRegistry: InterceptorRegistry
-    private lateinit var serverScopeInstance: ServerScopeInstance
-    val serverScopeBeanInstanceRegistry: BeanInstanceRegistry<Component>
-        get() = serverScopeInstance
+public abstract class SpikotPlugin : JavaPlugin(), BeanDefinitionRegistry, Classpath, CoroutineScope {
+    /**
+     * Cache storage which can be generally used
+     */
+    public val cache: TypedMap = TypedMap()
 
-    init {
-        logger.info("Start classpath scanning for $name")
-        classpathScanner = ReflectionsClasspathScanner(
-            ConfigurationBuilder()
-                .addUrls(file.toURI().toURL())
-                .addScanners(
-                    TypeAnnotationsScanner(),
-                    AllClassScanner()
-                )
-                .addClassLoaders(
-                    classLoader,
-                    Bukkit::class.java.classLoader
-                )
-                .run {
-                    Reflections(this)
-                }
-        )
-        UniversalClasspathScanner.addScanner(classpathScanner)
-        logger.info("Total ${classpathScanner.getAllTypes().size} class found")
+    public val dependingPlugin: List<Plugin> = (description.softDepend + description.depend).mapNotNull(::pluginOf)
 
-        beanDefinitionRegistry = PluginBeanDefinitionRegistry(this)
-        UniversalBeanDefinitionRegistry.addRegistry(beanDefinitionRegistry)
-
-        interceptorRegistry = PluginInterceptorRegistry(this)
-        UniversalInterceptorRegistry.addRegistry(interceptorRegistry)
-    }
+    public val dependingSpikotPlugin: List<SpikotPlugin> = dependingPlugin.filterIsInstance<SpikotPlugin>()
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main + CoroutinePlugin(this)
 
+    private val classpath = JavaPluginClasspath.fromPlugin(this)
+    private val beanDefinitionRegistry = ClasspathBeanDefinitionRegistry(classpath)
+    public val singletonScope: BeanDefinitionRegistryScopeInstance = beanDefinitionRegistryScope(
+        "singleton",
+        name,
+        this,
+        this
+    ) {
+        dependingSpikotPlugin
+            .map(SpikotPlugin::singletonScope)
+            .forEach(parents::add)
+
+        contextualObject["plugin"] = this@SpikotPlugin
+        contextualObject[name] = this@SpikotPlugin
+    }
+
+    // Classpath delegate
+
+    override val parents: Collection<Classpath>
+        get() = classpath.parents
+
+    override fun loadClass(name: String): KClass<*>? = classpath.loadClass(name)
+
+    override fun getAllTypes(): Collection<String> = classpath.getAllTypes()
+
+    override fun getTypesAnnotatedWith(annotation: KClass<out Annotation>): Collection<KClass<*>> = classpath.getTypesAnnotatedWith(annotation)
+
+    override fun getFunctionsAnnotatedWith(annotation: KClass<out Annotation>): Collection<KFunction<*>> = classpath.getFunctionsAnnotatedWith(annotation)
+
+    override fun <T : Any> getSubTypesOf(superType: KClass<T>): Collection<KClass<out T>> = classpath.getSubTypesOf(superType)
+
+    //BeanDefinitionRegistry delegate
+
+    override fun containsBeanDefinition(name: String): Boolean = beanDefinitionRegistry.containsBeanDefinition(name)
+
+    override fun containsBeanDefinition(name: String, scope: String): Boolean = beanDefinitionRegistry.containsBeanDefinition(name, scope)
+
+    override fun getBeanDefinition(name: String): BeanDefinition = beanDefinitionRegistry.getBeanDefinition(name)
+
+    override fun getBeanDefinition(name: String, scope: String): BeanDefinition = beanDefinitionRegistry.getBeanDefinition(name, scope)
+
+    override fun getAllBeanDefinition(): Collection<BeanDefinition> = beanDefinitionRegistry.getAllBeanDefinition()
+
+    override fun getAllBeanDefinition(scope: String): Collection<BeanDefinition> = beanDefinitionRegistry.getAllBeanDefinition(scope)
+
+    // Overriding
+
     final override fun onLoad() {
-        serverScopeInstance = ServerScopeInstance(this)
-        serverScopeInstance.load()
+        spikotLogger.trace { "Load $this" }
+        singletonScope.preInitializeBeanProcessor()
+
+        beanDefinitionRegistry.getAllBeanDefinition("singleton").asSequence()
+            .sortedBy { it.loadOrder }
+            .filter { it.annotations.has<EarlyLoad>() }
+            .forEach { definition ->
+                spikotLogger.catchAll("Exception thrown while initializing early load bean $definition") {
+                    if (singletonScope.hasBean(definition.description)) // Filter conditionally disabled bean
+                        singletonScope.getBean(definition.description)
+                }
+            }
     }
 
     final override fun onEnable() {
-        serverScopeInstance.enable()
+        spikotLogger.trace { "Enable $this" }
+        beanDefinitionRegistry.getAllBeanDefinition("singleton").asSequence()
+            .sortedBy { it.loadOrder }
+            .filter { !it.annotations.has<EarlyLoad>() }
+            .forEach { definition ->
+                spikotLogger.catchAll("Exception thrown while initializing early load bean $definition") {
+                    if (singletonScope.hasBean(definition.description))
+                        singletonScope.getBean(definition.description)
+                }
+            }
     }
 
     final override fun onDisable() {
-        serverScopeInstance.disable()
-        UniversalInterceptorRegistry.removeRegistry(interceptorRegistry)
-        UniversalBeanDefinitionRegistry.removeRegistry(beanDefinitionRegistry)
-        UniversalClasspathScanner.removeScanner(classpathScanner)
+        spikotLogger.trace { "Disable $this" }
+        singletonScope.close()
         cancel(CancellationException("Plugin shutdown"))
     }
 
-    companion object {
-        val allSpikotPlugins: List<SpikotPlugin>
+    public companion object {
+        public val allSpikotPlugins: List<SpikotPlugin>
             get() = Bukkit.getPluginManager().plugins.filterIsInstance<SpikotPlugin>()
     }
 }

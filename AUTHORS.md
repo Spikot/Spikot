@@ -1,4 +1,5 @@
 - HeartPattern
-  - Email: heartpattern@kakao.com
+  - Email: heartpattern@heartpattern.io
   - Github Account: HeartPattern
   - Website: https://github.com/HeartPattern
+  - Time zone: Asia/Seoul
