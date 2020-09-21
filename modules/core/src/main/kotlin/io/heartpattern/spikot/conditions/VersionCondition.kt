@@ -25,15 +25,15 @@ package io.heartpattern.spikot.conditions
 import io.heartpattern.spikot.bean.definition.BeanDefinition
 import io.heartpattern.spikot.condition.Condition
 import io.heartpattern.spikot.condition.ConditionContext
-import io.heartpattern.spikot.condition.ConditionHandler
+import io.heartpattern.spikot.condition.ConditionEvaluator
 import io.heartpattern.spikot.util.MINECRAFT_VERSION
 import io.heartpattern.spikot.util.Version
 
-@Condition(VersionConditionHandler::class)
+@Condition(VersionConditionEvaluator::class)
 @Retention(AnnotationRetention.RUNTIME)
 public annotation class VersionCondition(val version: String)
 
-private object VersionConditionHandler : ConditionHandler {
+private object VersionConditionEvaluator : ConditionEvaluator {
     override fun check(bean: BeanDefinition, context: ConditionContext): Boolean {
         val version = bean.annotations.get<VersionCondition>()!!.getTypedAttribute<String>("version")
 

@@ -24,6 +24,7 @@ import groovy.util.Node
 import groovy.util.NodeList
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -68,19 +69,12 @@ fun Project.supportingVersion(vararg versions: Version.Spigot) {
             resources.setSrcDirs(listOf("src/$versionName/resources"))
             compileClasspath += mainSourceSet.output
         }
-        dependencies.add("${versionName}CompileOnly", "org.spigotmc:spigot-api:${version.fullVersion}") {
-            isForce = true
-        }
-        dependencies.add("${versionName}CompileOnly", "org.spigotmc:spigot:${version.fullVersion}")
-        extendsDependencies(mainSourceSet, versionSourceSet)
 
-        // Check if main source set contains version specific code
-        val mainCheckSourceSet = sourceSets.create("${versionName}Check") {
-            java.setSrcDirs(listOf("src/main/kotlin"))
-            resources.setSrcDirs(listOf("src/main/resources"))
-        }
-        dependencies.add("${versionName}CheckCompileOnly", "org.spigotmc:spigot:${version.fullVersion}")
-        extendsDependencies(mainSourceSet, mainCheckSourceSet)
+        dependencies.add(versionSourceSet.implementationConfigurationName, mainSourceSet.output)
+        dependencies.add(versionSourceSet.implementationConfigurationName, mainSourceSet.compileClasspath)
+        dependencies.add("${versionName}CompileOnly", "org.spigotmc:spigot-api:${version.fullVersion}")
+        dependencies.add("${versionName}CompileOnly", "org.spigotmc:spigot:${version.fullVersion}")
+//        extendsDependencies(mainSourceSet, versionSourceSet)
     }
 
 
@@ -91,10 +85,12 @@ fun Project.supportingVersion(vararg versions: Version.Spigot) {
 
         val versionJarTask = tasks.create<Jar>("${versionName}Jar") {
             from(versionSourceSet.output)
+            archiveAppendix.set(versionName)
         }
 
         val versionSourceJarTask = tasks.create<Jar>("${versionName}SourceJar") {
             from(versionSourceSet.allSource)
+            archiveAppendix.set(versionName)
         }
 
         configure<PublishingExtension> {
@@ -136,6 +132,17 @@ fun Project.supportingVersion(vararg versions: Version.Spigot) {
         create("compileAll") {
             dependsOn(
                 *versions.map { "compile${it.name}Kotlin" }.toTypedArray()
+            )
+        }
+
+        getByName<Jar>("jar"){
+            dependsOn(
+                *versions.map{"compile${it.name}Kotlin"}.toTypedArray()
+            )
+            from(
+                *versions.map{
+                    sourceSets.getByName(it.name.toLowerCase()).output
+                }.toTypedArray()
             )
         }
     }

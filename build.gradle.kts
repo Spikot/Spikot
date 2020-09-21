@@ -61,6 +61,7 @@ tasks {
             description: Spigot plugin framework for Kotlin
             website: https://github.com/Spikot/
             authors: [$authors]
+            provides: [kotlin-stdlib-jdk8]
             load: STARTUP
         """.trimIndent())
         }

@@ -44,11 +44,19 @@ public data class Version(
 
     public companion object {
         private val versionRegex = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)")
+        private val versionWithoutPatchRegex = Pattern.compile("(\\d+)\\.(\\d+)")
 
         @JvmStatic
         public fun fromString(string: String): Version {
             val parsed = versionRegex.matcher(string)
-            parsed.matches()
+            if (!parsed.matches()) {
+                val withoutPatchParsed = versionWithoutPatchRegex.matcher(string)
+                return Version(
+                    withoutPatchParsed.group(1).toInt(),
+                    withoutPatchParsed.group(2).toInt(),
+                    0
+                )
+            }
             return Version(
                 parsed.group(1).toInt(),
                 parsed.group(2).toInt(),

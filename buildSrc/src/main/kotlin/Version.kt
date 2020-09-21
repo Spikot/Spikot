@@ -24,7 +24,7 @@ object Version {
     // Kotlins
     const val kotlin = "1.4.0"
     const val coroutine = "1.3.9"
-    const val serialization = "1.0.0-rc"
+    const val serialization = "1.0.0-RC"
 
     // MineCrafts
     val spigot = Spigot.V16.fullVersion
@@ -32,7 +32,7 @@ object Version {
     // Tests
     const val junit_platform = "1.6.2"
     const val junit_jupyter = "5.6.2"
-    const val mockk: String = "1.9.3"
+    const val mockk: String = "1.10.0"
 
     // Others
     const val reflections = "0.9.12"
@@ -40,6 +40,8 @@ object Version {
     const val slf4j = "1.7.30"
     const val auto_service = "1.0-rc7"
     const val guava = "29.0-jre"
+    const val log4j2 = "2.8.1"
+    const val kaml: String = "0.19.0"
 
     // Spigot versions
     enum class Spigot(val version: String, val fullVersion: String = "$version-R0.1-SNAPSHOT") {

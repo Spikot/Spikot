@@ -22,6 +22,7 @@
 
 package io.heartpattern.spikot.classpath
 
+import io.heartpattern.spikot.SpikotPlugin
 import io.heartpattern.spikot.reflection.fieldDelegate
 import io.heartpattern.spikot.reflection.kotlinGetter
 import io.heartpattern.spikot.reflection.kotlinSetter
@@ -31,6 +32,7 @@ import org.reflections.Reflections
 import org.reflections.scanners.MethodAnnotationsScanner
 import org.reflections.scanners.TypeAnnotationsScanner
 import org.reflections.util.ConfigurationBuilder
+import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -38,7 +40,8 @@ import kotlin.reflect.jvm.kotlinFunction
 
 internal class JavaPluginClasspath private constructor(
     plugin: JavaPlugin,
-    override val parents: Collection<Classpath>
+    override val parents: Collection<Classpath>,
+    basePackage: String? = null
 ) : Classpath {
     private val JavaPlugin.pluginFile by fieldDelegate<JavaPlugin, File>("file")
 
@@ -51,6 +54,8 @@ internal class JavaPluginClasspath private constructor(
                 AllClassScanner()
             )
             .addClassLoader(plugin::class.java.classLoader)
+            .setExpandSuperTypes(false)
+            .filterInputsBy { basePackage == null || it.startsWith(basePackage) }
     )
     private val allClass = reflections.scanAllClass().toSet()
 
@@ -90,7 +95,8 @@ internal class JavaPluginClasspath private constructor(
                         .mapNotNull { pluginOf(it) }
                         .filterIsInstance<JavaPlugin>()
                         .map { fromPlugin(it) }
-                        .toSet()
+                        .toSet(),
+                    (plugin as? SpikotPlugin)?.basePackage
                 )
             }
         }

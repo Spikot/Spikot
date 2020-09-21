@@ -35,8 +35,9 @@ dependencies {
     api(kotlin("reflect"))
     api("org.reflections", "reflections", Version.reflections)
     implementation("com.google.guava", "guava", Version.guava)
+    implementation("com.charleskorn.kaml","kaml",Version.kaml)
 
-    implementation("org.apache.logging.log4j", "log4j-slf4j-impl", "2.8.1") {
+    implementation("org.apache.logging.log4j", "log4j-slf4j-impl", Version.log4j2) {
         exclude("org.apache.logging.log4j", "log4j-api")
         exclude("org.apache.logging.log4j", "log4j-core")
     }

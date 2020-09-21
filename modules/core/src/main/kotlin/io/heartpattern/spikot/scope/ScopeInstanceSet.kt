@@ -69,6 +69,10 @@ public class ScopeInstanceSet(
         isInitialized = true
     }
 
+    public fun getScopeInstance(plugin: SpikotPlugin): ScopeInstance? {
+        return scopes[plugin.name]
+    }
+
     public fun destroy() {
         check(isInitialized) { "Cannot destroy scope instance set that is not initialized" }
         check(!isDestroyed) { "Cannot destroy scope instance set that already destroyed" }

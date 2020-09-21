@@ -31,10 +31,12 @@ import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 import kotlin.collections.HashMap
 
+@PublishedApi
 @Component
 @LoadOrder(LoadOrder.SYSTEM_LATEST)
-internal class PlayerScopeHandler {
-    private val scopeMap = HashMap<UUID, ScopeInstanceSet>()
+internal object PlayerScopeHandler {
+    @PublishedApi
+    internal val scopeMap = HashMap<UUID, ScopeInstanceSet>()
 
     @EventHandler
     fun PlayerJoinEvent.onPlayerJoin() {

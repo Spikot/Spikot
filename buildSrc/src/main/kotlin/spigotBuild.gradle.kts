@@ -37,7 +37,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
 }
 
-configurations["testRuntime"].extendsFrom(configurations["compileOnly"])
+configurations["testRuntimeOnly"].extendsFrom(configurations["compileOnly"])
 
 val mainSourceSet = sourceSets["main"]
 

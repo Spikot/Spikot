@@ -22,33 +22,19 @@
 
 package io.heartpattern.spikot.type
 
-/**
- * Key of [TypedMap]
- */
-public open class Attribute<T>
-
-/**
- * Key of [TypedMap] with default value
- */
-public abstract class DefaultTypedKey<T> : Attribute<T>() {
-    public abstract val default: T
-}
-
-@Suppress("FunctionName")
-public fun <T> DefaultTypedKey(default: T): DefaultTypedKey<T> = object : DefaultTypedKey<T>() {
-    override val default: T
-        get() = default
-}
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * Map that store typed key-value
  */
 public open class TypedMap(
-    protected val backingMap: MutableMap<Attribute<Any?>, Value<Any?>> = HashMap()
+    protected val backingMap: MutableMap<Key<Any?>, Value<Any?>> = HashMap()
 ) {
-    public operator fun <T> get(key: Attribute<T>): Option<T> {
+    public operator fun <T> get(key: Key<T>): Option<T> {
         @Suppress("USELESS_CAST")
-        val value = backingMap[key as Attribute<*>]
+        val value = backingMap[key as Key<*>]
 
         @Suppress("UNCHECKED_CAST")
         return if (value == null)
@@ -59,7 +45,7 @@ public open class TypedMap(
 
     public operator fun <T> get(key: DefaultTypedKey<T>): T {
         @Suppress("UNCHECKED_CAST")
-        val value = backingMap.getOrPut(key as Attribute<Any?>) {
+        val value = backingMap.getOrPut(key as Key<Any?>) {
             Value(key.default)
         }
 
@@ -67,17 +53,29 @@ public open class TypedMap(
         return value.value as T
     }
 
-    public operator fun <T> set(key: Attribute<T>, value: T) {
+    public operator fun <T> set(key: Key<T>, value: T) {
         @Suppress("UNCHECKED_CAST")
-        backingMap[key as Attribute<Any?>] = Value(value)
+        backingMap[key as Key<Any?>] = Value(value)
     }
 
-    public operator fun contains(key: Attribute<*>): Boolean {
+    @OptIn(ExperimentalContracts::class)
+    public inline fun <T> getOrCompute(key: Key<T>, compute: () -> T): T {
+        contract { callsInPlace(compute, InvocationKind.AT_MOST_ONCE) }
+        val value = this[key]
+        if (value is Some)
+            return value.value
+
+        val computed = compute()
+        this[key] = computed
+        return computed
+    }
+
+    public operator fun contains(key: Key<*>): Boolean {
         return backingMap.containsKey(key)
     }
 
-    public fun <T> remove(key: Attribute<T>): Option<T> {
-        val removed = backingMap.remove(key as Attribute<*>)
+    public fun <T> remove(key: Key<T>): Option<T> {
+        val removed = backingMap.remove(key as Key<*>)
 
         @Suppress("UNCHECKED_CAST")
         return if (removed != null)
@@ -90,6 +88,26 @@ public open class TypedMap(
         return backingMap.isEmpty()
     }
 
-    public val keys: Set<Attribute<*>>
+    public val keys: Set<Key<*>>
         get() = backingMap.keys
+
+    /**
+     * Key of [TypedMap]
+     */
+    public open class Key<T>
+
+    /**
+     * Key of [TypedMap] with default value
+     */
+    public abstract class DefaultTypedKey<T> : Key<T>() {
+        public abstract val default: T
+    }
+
+    public companion object {
+        @Suppress("FunctionName")
+        public fun <T> DefaultTypedKey(default: T): DefaultTypedKey<T> = object : DefaultTypedKey<T>() {
+            override val default: T
+                get() = default
+        }
+    }
 }

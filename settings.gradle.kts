@@ -23,7 +23,8 @@
 rootProject.name = "Spikot"
 
 val modules = listOf<String>(
-    "core"
+    "core",
+    "packet"
 //    "command",
 //    "command:predef",
 //    "chat",

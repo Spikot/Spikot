@@ -35,8 +35,6 @@ dependencies {
     implementation("org.jetbrains.kotlin", "kotlin-serialization", "1.4.0")
     implementation("org.jetbrains.dokka", "dokka-core", "1.4.0-rc")
     implementation("org.jetbrains.dokka", "dokka-gradle-plugin", "1.4.0-rc")
-
-    implementation("gradle.plugin.me.finalchild", "kopo-gradle", "0.0.1-SNAPSHOT")
 }
 
 kotlinDslPluginOptions {

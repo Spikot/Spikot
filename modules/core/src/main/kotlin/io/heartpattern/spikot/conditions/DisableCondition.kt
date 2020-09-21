@@ -25,13 +25,13 @@ package io.heartpattern.spikot.conditions
 import io.heartpattern.spikot.bean.definition.BeanDefinition
 import io.heartpattern.spikot.condition.Condition
 import io.heartpattern.spikot.condition.ConditionContext
-import io.heartpattern.spikot.condition.ConditionHandler
+import io.heartpattern.spikot.condition.ConditionEvaluator
 
-@Condition(DisableConditionHandler::class)
+@Condition(DisableConditionEvaluator::class)
 @Retention(AnnotationRetention.RUNTIME)
 public annotation class Disable
 
-private object DisableConditionHandler : ConditionHandler {
+private object DisableConditionEvaluator : ConditionEvaluator {
     override fun check(bean: BeanDefinition, context: ConditionContext): Boolean {
         return false
     }

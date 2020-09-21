@@ -25,5 +25,5 @@ package io.heartpattern.spikot.condition
 import kotlin.reflect.KClass
 
 public annotation class Condition(
-    val handler: KClass<out ConditionHandler>
+    val evaluator: KClass<out ConditionEvaluator>
 )

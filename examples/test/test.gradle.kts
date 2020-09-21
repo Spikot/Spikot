@@ -25,9 +25,15 @@ plugins {
     id("kr.entree.spigradle") version "2.1.1"
 }
 
+repositories{
+    mavenLocal()
+}
+
 dependencies {
     implementation(modules("core"))
+    implementation(modules("packet"))
     implementation("org.spigotmc", "spigot-api", "1.16.2-R0.1-SNAPSHOT")
+    implementation("org.spigotmc", "spigot", "1.16.2-R0.1-SNAPSHOT")
 }
 
 spigot {

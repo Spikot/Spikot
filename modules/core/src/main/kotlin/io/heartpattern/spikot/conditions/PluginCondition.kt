@@ -25,14 +25,14 @@ package io.heartpattern.spikot.conditions
 import io.heartpattern.spikot.bean.definition.BeanDefinition
 import io.heartpattern.spikot.condition.Condition
 import io.heartpattern.spikot.condition.ConditionContext
-import io.heartpattern.spikot.condition.ConditionHandler
+import io.heartpattern.spikot.condition.ConditionEvaluator
 import io.heartpattern.spikot.util.pluginOf
 
-@Condition(PluginConditionHandler::class)
+@Condition(PluginConditionEvaluator::class)
 @Retention(AnnotationRetention.RUNTIME)
 public annotation class PluginCondition(val plugin: String)
 
-private object PluginConditionHandler : ConditionHandler {
+private object PluginConditionEvaluator : ConditionEvaluator {
     override fun check(bean: BeanDefinition, context: ConditionContext): Boolean {
         val name = bean.annotations.get<PluginCondition>()!!.getTypedAttribute<String>("plugin")
         return pluginOf(name) != null

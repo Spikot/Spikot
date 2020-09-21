@@ -28,11 +28,10 @@ import io.heartpattern.spikot.bean.*
 import io.heartpattern.spikot.bean.definition.DefaultAnnotationBeanDefinition.PropertyInjector
 import io.heartpattern.spikot.condition.Condition
 import io.heartpattern.spikot.condition.ConditionContext
-import io.heartpattern.spikot.condition.ConditionHandler
+import io.heartpattern.spikot.condition.ConditionEvaluator
 import io.heartpattern.spikot.reflection.getObjectInstanceOrCreate
 import io.heartpattern.spikot.reflection.withAccessibility
 import java.util.*
-import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 import kotlin.collections.ArrayList
 import kotlin.reflect.*
@@ -61,7 +60,7 @@ public class DefaultAnnotationBeanDefinition private constructor(
     private val destroyFunctions: Collection<KFunction<*>>
     private val propertyInjects: Collection<Pair<BeanDescription, PropertyInjector>>
     private val constructorInjects: List<BeanDescription>
-    private val conditionHandlers: Collection<KClass<out ConditionHandler>>
+    private val conditionHandlers: Collection<KClass<out ConditionEvaluator>>
 
     init {
         // Explicit dependency by DependsOn (Kotlin object support)
@@ -191,7 +190,7 @@ public class DefaultAnnotationBeanDefinition private constructor(
     private fun parseInitializeFunctions(): Collection<KFunction<*>> {
         val declared = type.memberFunctions.filter { func ->
             val mergedAnnotations = func.mergedAnnotations
-            mergedAnnotations.has<AfterInitialize>() || mergedAnnotations.has<PostConstruct>()
+            mergedAnnotations.has<AfterInitialize>()
         }.toSet()
         val mark = annotations.get<Bean>()?.getTypedAttribute<String>("initialize")
 
@@ -208,7 +207,7 @@ public class DefaultAnnotationBeanDefinition private constructor(
     private fun parseDestroyFunctions(): Collection<KFunction<*>> {
         val declared = type.memberFunctions.filter { func ->
             val mergedAnnotations = func.mergedAnnotations
-            mergedAnnotations.has<BeforeDestroy>() || mergedAnnotations.has<PreDestroy>()
+            mergedAnnotations.has<BeforeDestroy>()
         }.toSet()
         val mark = annotations.get<Bean>()?.getTypedAttribute<String>("destroy")
 
@@ -226,9 +225,9 @@ public class DefaultAnnotationBeanDefinition private constructor(
         return "DefaultAnnotationBeanDefinition(type=$type, scope='$scope', name='$name', loadOrder=$loadOrder, isPrimary=$isPrimary, isLazy=$isLazy)"
     }
 
-    private fun parseConditions(): Collection<KClass<out ConditionHandler>> {
+    private fun parseConditions(): Collection<KClass<out ConditionEvaluator>> {
         return annotations.getAll<Condition>()
-            .map { it.getTypedAttribute<Class<out ConditionHandler>>("handler").kotlin }
+            .map { it.getTypedAttribute<Class<out ConditionEvaluator>>("evaluator").kotlin }
     }
 
     private fun interface PropertyInjector {

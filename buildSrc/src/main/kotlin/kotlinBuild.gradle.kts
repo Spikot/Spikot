@@ -22,6 +22,7 @@
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
 //    id("org.jetbrains.dokka")
     `maven-publish`
 }
@@ -31,13 +32,16 @@ repositories {
 }
 
 dependencies {
-    api(kotlin("stdlib"))
+    api(kotlin("stdlib-jdk8"))
     api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", Version.coroutine)
+    api("org.jetbrains.kotlinx","kotlinx-coroutines-jdk8", Version.coroutine)
+    api("org.jetbrains.kotlinx", "kotlinx-serialization-core", Version.serialization)
     api("io.github.microutils", "kotlin-logging", Version.kotlin_logging)
 
     testImplementation("org.junit.jupiter", "junit-jupiter", Version.junit_jupyter)
     testImplementation("io.mockk", "mockk", Version.mockk)
     testImplementation("org.slf4j", "slf4j-api", Version.slf4j)
+    testRuntimeOnly("org.apache.logging.log4j", "log4j-core", Version.log4j2)
 }
 
 tasks {

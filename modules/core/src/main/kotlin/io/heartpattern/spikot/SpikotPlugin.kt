@@ -48,7 +48,9 @@ private val spikotLogger = KotlinLogging.logger {}
  * Main class of plugin which use Spikot.
  * Plugin developer should extends this class instead of [JavaPlugin]
  */
-public abstract class SpikotPlugin : JavaPlugin(), BeanDefinitionRegistry, Classpath, CoroutineScope {
+public abstract class SpikotPlugin(
+    internal val basePackage: String? = null
+) : JavaPlugin(), BeanDefinitionRegistry, Classpath, CoroutineScope {
     /**
      * Cache storage which can be generally used
      */
@@ -60,20 +62,22 @@ public abstract class SpikotPlugin : JavaPlugin(), BeanDefinitionRegistry, Class
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main + CoroutinePlugin(this)
 
-    private val classpath = JavaPluginClasspath.fromPlugin(this)
-    private val beanDefinitionRegistry = ClasspathBeanDefinitionRegistry(classpath)
-    public val singletonScope: BeanDefinitionRegistryScopeInstance = beanDefinitionRegistryScope(
-        "singleton",
-        name,
-        this,
-        this
-    ) {
-        dependingSpikotPlugin
-            .map(SpikotPlugin::singletonScope)
-            .forEach(parents::add)
+    private val classpath by lazy { JavaPluginClasspath.fromPlugin(this) }
+    private val beanDefinitionRegistry by lazy { ClasspathBeanDefinitionRegistry(classpath) }
+    public val singletonScope: BeanDefinitionRegistryScopeInstance by lazy {
+        beanDefinitionRegistryScope(
+            "singleton",
+            name,
+            this,
+            this
+        ) {
+            dependingSpikotPlugin
+                .map(SpikotPlugin::singletonScope)
+                .forEach(parents::add)
 
-        contextualObject["plugin"] = this@SpikotPlugin
-        contextualObject[name] = this@SpikotPlugin
+            contextualObject["plugin"] = this@SpikotPlugin
+            contextualObject[name] = this@SpikotPlugin
+        }
     }
 
     // Classpath delegate
