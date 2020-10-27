@@ -20,12 +20,13 @@
  * SOFTWARE.
  */
 
-package io.heartpattern.spikot.player
+package io.heartpattern.spikot.scope
 
 import io.heartpattern.spikot.SpikotPlugin
-import io.heartpattern.spikot.bean.BeanDescription
-import org.bukkit.entity.Player
 
-public inline fun <reified T> Player.getBean(plugin: SpikotPlugin, name: String? = null): T? {
-    return PlayerScopeHandler[plugin]?.get(this)?.getBean(BeanDescription.fromTypeAndName(T::class, name)) as T?
+public interface ScopeInstanceGroup<Q>{
+    public val plugin: SpikotPlugin
+    public val scope: String
+    public val activeQualifiers: Collection<Q>
+    public operator fun get(qualifier: Q): ScopeInstance?
 }

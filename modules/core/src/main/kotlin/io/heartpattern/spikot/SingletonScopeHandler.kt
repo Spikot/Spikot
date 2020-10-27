@@ -20,12 +20,25 @@
  * SOFTWARE.
  */
 
-package io.heartpattern.spikot.player
+package io.heartpattern.spikot
 
-import io.heartpattern.spikot.SpikotPlugin
-import io.heartpattern.spikot.bean.BeanDescription
-import org.bukkit.entity.Player
+import io.heartpattern.spikot.scope.ScopeHandler
+import io.heartpattern.spikot.scope.ScopeInstance
+import io.heartpattern.spikot.scope.ScopeInstanceGroup
 
-public inline fun <reified T> Player.getBean(plugin: SpikotPlugin, name: String? = null): T? {
-    return PlayerScopeHandler[plugin]?.get(this)?.getBean(BeanDescription.fromTypeAndName(T::class, name)) as T?
+public object SingletonScopeHandler : ScopeHandler<Unit> {
+    override fun get(plugin: SpikotPlugin): ScopeInstanceGroup<Unit> {
+        return object: ScopeInstanceGroup<Unit>{
+            override val plugin: SpikotPlugin
+                get() = plugin
+            override val scope: String
+                get() = "singleton"
+            override val activeQualifiers: Collection<Unit>
+                get() = listOf(Unit)
+
+            override fun get(qualifier: Unit): ScopeInstance {
+                return plugin.singletonScope
+            }
+        }
+    }
 }

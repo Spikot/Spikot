@@ -22,41 +22,49 @@
 
 package io.heartpattern.spikot.player
 
+import io.heartpattern.spikot.SingletonScopeHandler
+import io.heartpattern.spikot.SpikotPlugin
+import io.heartpattern.spikot.bean.AfterInitialize
+import io.heartpattern.spikot.bean.BeforeDestroy
 import io.heartpattern.spikot.bean.Component
 import io.heartpattern.spikot.bean.LoadOrder
-import io.heartpattern.spikot.scope.ScopeInstanceSet
+import io.heartpattern.spikot.scope.DefaultScopeHandler
+import io.heartpattern.spikot.util.forEachMergedException
+import io.heartpattern.spikot.util.onlinePlayers
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import java.util.*
-import kotlin.collections.HashMap
 
-@PublishedApi
 @Component
 @LoadOrder(LoadOrder.SYSTEM_LATEST)
-internal object PlayerScopeHandler {
-    @PublishedApi
-    internal val scopeMap = HashMap<UUID, ScopeInstanceSet>()
+public object PlayerScopeHandler : DefaultScopeHandler<Player>() {
+    override val scope: String = "player"
 
-    @EventHandler
-    fun PlayerJoinEvent.onPlayerJoin() {
-        val scopeSet = ScopeInstanceSet(
-            "player",
-            player.name,
-            mapOf(
-                "player" to player
-            )
-        )
+    override fun DefaultScopeHandlerConfig.configure(plugin: SpikotPlugin, qualifier: Player) {
+        parent(SingletonScopeHandler) { Unit }
+        contextualObject("player", qualifier)
+    }
 
-        scopeSet.initialize()
-        scopeMap[player.uniqueId] = scopeSet
+    @AfterInitialize
+    private fun init(){
+        println("Init ${onlinePlayers.size}")
+        onlinePlayers.forEachMergedException("Exception thrown while enabling player scope", ::create)
+    }
+
+    @BeforeDestroy
+    private fun die(){
+        println("Die ${onlinePlayers.size}")
+        onlinePlayers.forEachMergedException("Exception thrown while disabling player scope", ::destroy)
     }
 
     @EventHandler
-    fun PlayerQuitEvent.onPlayerQuit() {
-        val removed = scopeMap.remove(player.uniqueId)
-            ?: error("ScopeInstanceSet does not exist for ${player.name}")
+    private fun PlayerJoinEvent.onJoin(){
+        create(player)
+    }
 
-        removed.destroy()
+    @EventHandler
+    private fun PlayerQuitEvent.onQuit(){
+        destroy(player)
     }
 }

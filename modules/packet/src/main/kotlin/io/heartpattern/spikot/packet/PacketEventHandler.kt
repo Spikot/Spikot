@@ -27,6 +27,7 @@ import io.heartpattern.spikot.bean.AfterInitialize
 import io.heartpattern.spikot.bean.BeforeDestroy
 import io.heartpattern.spikot.bean.Component
 import io.heartpattern.spikot.extension.catchAll
+import io.heartpattern.spikot.util.forEachMergedException
 import io.heartpattern.spikot.util.onlinePlayers
 import mu.KotlinLogging
 import org.bukkit.entity.Player

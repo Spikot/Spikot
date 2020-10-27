@@ -25,7 +25,7 @@ package io.heartpattern.spikot.scope
 import io.heartpattern.spikot.SpikotPlugin
 import org.bukkit.Bukkit
 
-public class ScopeInstanceSet(
+public class ScopeInstanceGroupTmp(
     public val scope: String,
     public val name: String,
     public val contextualObject: Map<String, Any> = emptyMap()
@@ -57,7 +57,7 @@ public class ScopeInstanceSet(
 
                 parents.add(plugin.singletonScope)
 
-                contextualObject.putAll(this@ScopeInstanceSet.contextualObject)
+                contextualObject.putAll(this@ScopeInstanceGroupTmp.contextualObject)
             }
 
             scope.preInitializeBeanProcessor()

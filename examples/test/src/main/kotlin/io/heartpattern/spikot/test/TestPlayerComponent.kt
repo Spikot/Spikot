@@ -31,8 +31,6 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 @PlayerComponent
-//@Component
-//@Scope("player")
 class TestPlayerComponent(
     val player: Player
 ) {

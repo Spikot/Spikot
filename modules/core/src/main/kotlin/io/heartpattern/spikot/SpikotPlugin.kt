@@ -74,9 +74,6 @@ public abstract class SpikotPlugin(
             dependingSpikotPlugin
                 .map(SpikotPlugin::singletonScope)
                 .forEach(parents::add)
-
-            contextualObject["plugin"] = this@SpikotPlugin
-            contextualObject[name] = this@SpikotPlugin
         }
     }
 

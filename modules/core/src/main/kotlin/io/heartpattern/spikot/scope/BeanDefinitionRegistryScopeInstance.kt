@@ -29,13 +29,11 @@ import io.heartpattern.spikot.bean.definition.BeanDefinitionRegistry
 import io.heartpattern.spikot.condition.ConditionContext
 import io.heartpattern.spikot.extension.catchAll
 import mu.KotlinLogging
-import org.bukkit.plugin.Plugin
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.isSuperclassOf
 
 private val logger = KotlinLogging.logger {}
 
@@ -55,7 +53,10 @@ public class BeanDefinitionRegistryScopeInstance constructor(
 
     private val beanInCreation = HashSet<BeanHolder>()
 
-    private val contextualObjects: Map<String, Any> = contextualObjects + mapOf("scope" to this)
+    private val contextualObjects: Map<String, Any> = contextualObjects + mapOf(
+        "plugin" to owingPlugin,
+        "scope" to this
+    )
 
     override val allBeanProcessors: Collection<String>
         get() = (parents.flatMap { it.allBeanProcessors } +
@@ -211,13 +212,6 @@ public class BeanDefinitionRegistryScopeInstance constructor(
     }
 
     private fun getContextualObject(description: BeanDescription): Any? {
-        // Treat plugin contextual object specially
-        if (description.type != null &&
-            description.type.isSubclassOf(Plugin::class) &&
-            description.type.isSuperclassOf(SpikotPlugin::class) &&
-            description.name == null)
-            return owingPlugin
-
         val set = getContextualObjects(description)
         return when {
             set.isEmpty() -> null
