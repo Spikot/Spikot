@@ -25,5 +25,6 @@ package io.heartpattern.spikot.command
 import io.heartpattern.spikot.bean.Component
 
 @Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 @Component
 public annotation class CommandComponent(val name: String)

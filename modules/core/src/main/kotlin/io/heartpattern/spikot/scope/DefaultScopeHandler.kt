@@ -41,6 +41,9 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
     private val instances = LinkedHashMap<String, DefaultScopeInstanceGroup<Q>>()
     private val availableQualifier = LinkedHashSet<Q>()
 
+    public val activeQualifiers: Set<Q>
+        get() = availableQualifier
+
     public abstract val scope: String
     protected abstract fun DefaultScopeHandlerConfig.configure(plugin: SpikotPlugin, qualifier: Q)
 
@@ -81,10 +84,18 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
         val instance = DefaultScopeInstanceGroup<Q>(
             plugin,
             scope,
-            {
-                val config = DefaultScopeHandlerConfig()
-                config.configure(plugin, it)
-                config.applyBuilder(this@DefaultScopeInstanceGroup, plugin, it)
+            {qualifier->
+                val config = DefaultScopeHandlerConfig(this, plugin)
+                config.configure(plugin, qualifier)
+                plugin.deepDependingSpikotPlugin.forEachMergedException("Exception thrown while adding parent scope"){depend->
+                    val group = this@DefaultScopeHandler[depend]
+                        ?: throw IllegalStateException("Depending plugin $depend is not loaded")
+
+                    val scope = group[qualifier]
+                        ?: throw IllegalStateException("Depending scope ${this@DefaultScopeHandler} with $qualifier is not loaded in $plugin")
+
+                    parents.add(scope)
+                }
             }
         )
 
@@ -124,29 +135,38 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
         }
     }
 
-    public inner class DefaultScopeHandlerConfig internal constructor() {
-        private val handlers = LinkedList<Pair<ScopeHandler<Any?>, (Any?) -> Any?>>()
-        public val contextualObjects: MutableMap<String, Any> = HashMap<String, Any>()
+    public inner class DefaultScopeHandlerConfig internal constructor(
+        private val builder: ScopeInstanceBuilder,
+        private val plugin: SpikotPlugin
+    ) {
+        public fun <P> parents(handler: ScopeHandler<P>, link: (SpikotPlugin) -> P) {
+            (plugin.dependingSpikotPlugin + plugin).forEachMergedException("Exception thrown while adding parent scope") inner@{ depend ->
+                val qualifier = link(depend)
+                val group = handler[depend]
+                    ?: throw IllegalStateException("Depending plugin $depend is not loaded")
+                val scope = group[qualifier]
+                    ?: throw IllegalStateException("Depending scope $handler with $qualifier is not loaded in $plugin")
+                builder.parents.add(scope)
+            }
+        }
 
-        public fun <P> parent(handler: ScopeHandler<P>, link: (Q) -> P) {
-            @Suppress("UNCHECKED_CAST")
-            handlers.add((handler to link) as Pair<ScopeHandler<Any?>, (Any?) -> Any?>)
+        public fun <P> parentsIfExist(handler: ScopeHandler<P>, link: (SpikotPlugin) -> P){
+            (plugin.dependingSpikotPlugin + plugin).forEachMergedException("Exception thrown while adding parent scope") inner@{ depend ->
+                val qualifier = link(depend)
+                val group = handler[depend]
+                    ?: return@inner
+                val scope = group[qualifier]
+                    ?: return@inner
+                builder.parents.add(scope)
+            }
+        }
+
+        public fun parent(instance: ScopeInstance){
+            builder.parents.add(instance)
         }
 
         public fun contextualObject(name: String, value: Any) {
-            contextualObjects[name] = value
-        }
-
-        internal fun applyBuilder(builder: ScopeInstanceBuilder, plugin: SpikotPlugin, qualifier: Q) {
-            handlers.forEach { (handler, transformer) ->
-                (plugin.dependingSpikotPlugin + plugin).forEach inner@{ depend ->
-                    val group = handler[depend] ?: return@inner
-                    val scope = group[transformer(qualifier)] ?: return@inner
-                    builder.parents.add(scope)
-                }
-            }
-
-            builder.contextualObject.putAll(contextualObjects)
+            builder.contextualObject[name] = value
         }
     }
 }

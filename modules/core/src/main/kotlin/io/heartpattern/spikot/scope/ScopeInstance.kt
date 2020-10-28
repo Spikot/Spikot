@@ -47,6 +47,11 @@ public interface ScopeInstance : BeanRegistry {
     public val owingPlugin: SpikotPlugin
 
     /**
+     * Parents of this scope
+     */
+    public val parents: Collection<ScopeInstance>
+
+    /**
      * Register [scope] as child of this scope. Before closing this scope, child scope's [close] will invoke.
      */
     public fun registerChildScope(scope: ScopeInstance)

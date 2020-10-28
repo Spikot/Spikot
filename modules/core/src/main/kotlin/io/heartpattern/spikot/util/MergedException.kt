@@ -22,32 +22,27 @@
 
 package io.heartpattern.spikot.util
 
-import java.io.PrintStream
-
 public class MergedException(
     public val exceptions: List<Exception>,
     message: String? = null,
 ) : Exception(
     message
 ) {
-    override fun printStackTrace(s: PrintStream) {
-        super.printStackTrace(s)
-        exceptions.forEach {
-            it.printStackTrace(s)
-        }
+    init {
+        exceptions.forEach(::addSuppressed)
     }
 }
 
-public inline fun <T> Iterable<T>.forEachMergedException(message: String? = null, consumer: (T)->Unit){
+public inline fun <T> Iterable<T>.forEachMergedException(message: String? = null, consumer: (T) -> Unit) {
     val exceptions = ArrayList<Exception>()
-    forEach{
-        try{
+    forEach {
+        try {
             consumer(it)
-        } catch(e: Exception){
+        } catch (e: Exception) {
             exceptions.add(e)
         }
     }
 
-    if(exceptions.isNotEmpty())
+    if (exceptions.isNotEmpty())
         throw MergedException(exceptions, message)
 }

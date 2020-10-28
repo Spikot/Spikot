@@ -42,7 +42,7 @@ public class BeanDefinitionRegistryScopeInstance constructor(
     public override val name: String,
     public override val owingPlugin: SpikotPlugin,
     beanDefinitionRegistry: BeanDefinitionRegistry,
-    public val parents: Collection<ScopeInstance>,
+    public override val parents: Collection<ScopeInstance>,
     contextualObjects: Map<String, Any>
 ) : ScopeInstance {
     private val beans = HashMap<String, BeanHolder>()
@@ -199,7 +199,7 @@ public class BeanDefinitionRegistryScopeInstance constructor(
             return
         isClosed = true
 
-        for (child in children)
+        for (child in children.toList())
             child.close()
 
         for (holder in beanLoadOrder.descendingIterator()) {

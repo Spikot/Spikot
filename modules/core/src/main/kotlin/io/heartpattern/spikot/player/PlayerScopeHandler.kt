@@ -42,19 +42,17 @@ public object PlayerScopeHandler : DefaultScopeHandler<Player>() {
     override val scope: String = "player"
 
     override fun DefaultScopeHandlerConfig.configure(plugin: SpikotPlugin, qualifier: Player) {
-        parent(SingletonScopeHandler) { Unit }
+        parents(SingletonScopeHandler) { Unit }
         contextualObject("player", qualifier)
     }
 
     @AfterInitialize
     private fun init(){
-        println("Init ${onlinePlayers.size}")
         onlinePlayers.forEachMergedException("Exception thrown while enabling player scope", ::create)
     }
 
     @BeforeDestroy
     private fun die(){
-        println("Die ${onlinePlayers.size}")
         onlinePlayers.forEachMergedException("Exception thrown while disabling player scope", ::destroy)
     }
 

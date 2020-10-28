@@ -76,4 +76,8 @@ tasks {
         destinationDirectory.set(File("$buildDir/libs"))
         archiveFileName.set("Spikot.plugin-${project.version}.jar")
     }
+
+    create("clean"){
+        File(project.rootDir, "build").deleteRecursively()
+    }
 }

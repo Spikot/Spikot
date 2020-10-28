@@ -33,6 +33,7 @@ import io.heartpattern.spikot.scope.BeanDefinitionRegistryScopeInstance
 import io.heartpattern.spikot.scope.beanDefinitionRegistryScope
 import io.heartpattern.spikot.type.TypedMap
 import io.heartpattern.spikot.util.pluginOf
+import io.heartpattern.spikot.util.uniqueBfs
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import org.bukkit.Bukkit
@@ -59,6 +60,10 @@ public abstract class SpikotPlugin(
     public val dependingPlugin: List<Plugin> = (description.softDepend + description.depend).mapNotNull(::pluginOf)
 
     public val dependingSpikotPlugin: List<SpikotPlugin> = dependingPlugin.filterIsInstance<SpikotPlugin>()
+    public val deepDependingSpikotPlugin: List<SpikotPlugin> = run{
+        val set = uniqueBfs(this){it.dependingSpikotPlugin}.toSet()
+        allSpikotPlugins.filter{it in set}
+    }
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main + CoroutinePlugin(this)
 
