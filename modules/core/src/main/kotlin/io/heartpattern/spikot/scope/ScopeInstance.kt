@@ -24,6 +24,7 @@ package io.heartpattern.spikot.scope
 
 import io.heartpattern.spikot.SpikotPlugin
 import io.heartpattern.spikot.bean.BeanRegistry
+import io.heartpattern.spikot.type.TypedMap
 
 public interface ScopeInstance : BeanRegistry {
     /**
@@ -50,6 +51,11 @@ public interface ScopeInstance : BeanRegistry {
      * Parents of this scope
      */
     public val parents: Collection<ScopeInstance>
+
+    /**
+     * General purpose map that user can save any data belong to scope.
+     */
+    public val data: TypedMap
 
     /**
      * Register [scope] as child of this scope. Before closing this scope, child scope's [close] will invoke.

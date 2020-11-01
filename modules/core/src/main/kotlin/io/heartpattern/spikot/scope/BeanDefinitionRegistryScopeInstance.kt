@@ -28,6 +28,7 @@ import io.heartpattern.spikot.bean.definition.BeanDefinition
 import io.heartpattern.spikot.bean.definition.BeanDefinitionRegistry
 import io.heartpattern.spikot.condition.ConditionContext
 import io.heartpattern.spikot.extension.catchAll
+import io.heartpattern.spikot.type.TypedMap
 import mu.KotlinLogging
 import java.util.*
 import kotlin.collections.ArrayList
@@ -70,6 +71,8 @@ public class BeanDefinitionRegistryScopeInstance constructor(
 
     override val allBeanName: Collection<String>
         get() = parents.flatMap { it.allBeanName } + beans.keys
+
+    override val data: TypedMap = TypedMap()
 
     init {
         val conditionContext = ConditionContext(this)
