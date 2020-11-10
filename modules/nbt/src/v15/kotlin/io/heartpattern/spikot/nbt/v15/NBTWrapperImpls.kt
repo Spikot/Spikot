@@ -8,7 +8,7 @@ import java.util.*
 
 private val NBTTagLongArray.value by fieldDelegate<NBTTagLongArray, LongArray>("b")
 
-private fun NBTBase.wrap(): Tag<*> = NBTAdapterImpl.wrapTag(this)
+private fun NBTBase.wrap(): Tag<*> = NBTAdapter.wrapTag(this)
 
 data class EndTagImpl(override val rawTag: NBTTagEnd) : EndTag {
     override val value: Unit
@@ -85,7 +85,7 @@ data class ListTagImpl(override val rawTag: NBTTagList) : ListTag {
     override fun copy(): ListTag = ListTagImpl(rawTag.clone())
     override fun add(element: Tag<*>){rawTag.add(element.rawTag as NBTBase)}
     override fun add(index: Int, element: Tag<*>){rawTag.a(index, element.rawTag as NBTBase)}
-    override fun remove(index: Int): Tag<*> = NBTAdapterImpl.wrapTag(rawTag.removeAt(index))
+    override fun remove(index: Int): Tag<*> = NBTAdapter.wrapTag(rawTag.removeAt(index))
     override fun isEmpty(): Boolean = rawTag.size == 0
     override fun getCompound(index: Int): CompoundTag = rawTag[index].wrap() as CompoundTag
     override fun getInt(index: Int): Int = rawTag.e(index)

@@ -5,7 +5,7 @@ import io.heartpattern.spikot.nbt.*
 import net.minecraft.server.v1_12_R1.*
 
 @Adapter(version = "1.12~1.12.2")
-object NBTAdapterImpl : NBTAdapter {
+class NBTAdapterImpl : NBTAdapter {
     private val createTagMethod = NBTBase::class.java.getDeclaredMethod("createTag", Byte::class.java)
 
     init {

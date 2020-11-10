@@ -6,13 +6,7 @@ import io.heartpattern.spikot.nbt.Tag
 import net.minecraft.server.v1_15_R1.*
 
 @Adapter(version = "1.15~1.15.2")
-object NBTAdapterImpl : NBTAdapter {
-    private val createTagMethod = NBTBase::class.java.getDeclaredMethod("createTag", Byte::class.java)
-
-    init {
-        createTagMethod.isAccessible = true
-    }
-
+class NBTAdapterImpl : NBTAdapter {
     override fun createEndTag(): EndTag = createTag(TagType.END) as EndTag
     override fun createByteTag(value: Byte): ByteTag = ByteTagImpl(NBTTagByte.a(value))
     override fun createShortTag(value: Short): ShortTag = ShortTagImpl(NBTTagShort.a(value))
@@ -33,7 +27,23 @@ object NBTAdapterImpl : NBTAdapter {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> createTag(type: TagType<T>): Tag<T> {
-        return wrapTag(createTagMethod.invoke(null, type.id.toByte())) as Tag<T>
+        return when (type) {
+            TagType.END -> createEndTag()
+            TagType.BYTE -> createByteTag(0)
+            TagType.SHORT -> createShortTag(0)
+            TagType.INT -> createIntTag(0)
+            TagType.LONG -> createLongTag(0)
+            TagType.FLOAT -> createFloatTag(0f)
+            TagType.DOUBLE -> createDoubleTag(0.0)
+            TagType.BYTE_ARRAY -> createByteTag(0)
+            TagType.STRING -> createStringTag()
+            TagType.LIST -> createListTag()
+            TagType.COMPOUND -> createCompoundTag()
+            TagType.INT_ARRAY -> createIntArrayTag(listOf())
+            TagType.LONG_ARRAY -> createLongArrayTag(listOf())
+            TagType.MISC -> throw IllegalArgumentException("Illegal tag type: ${type}")
+
+        } as Tag<T>
     }
 
     override fun wrapEndTag(tag: Any): EndTag = EndTagImpl(tag as NBTTagEnd)

@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 import net.minecraft.server.v1_16_R2.ItemStack as NMSItemStack
 
 @Adapter(version = "1.16~1.16.4")
-object NMSItemStackAdapterImpl : NMSItemStackAdapter {
+class NMSItemStackAdapterImpl : NMSItemStackAdapter {
     override fun loadFromTag(tag: CompoundTag): ItemStack {
         val nms = NMSItemStack.a(tag.rawTag as NBTTagCompound)
         return CraftItemStack.asCraftMirror(nms)
@@ -45,5 +45,5 @@ object NMSItemStackAdapterImpl : NMSItemStackAdapter {
         return CraftItemStack.asCraftMirror(CraftItemStack.asNMSCopy(item))
     }
 
-    val CraftItemStack.handle by fieldDelegate<CraftItemStack, NMSItemStack?>("handle")
+    private val CraftItemStack.handle by fieldDelegate<CraftItemStack, NMSItemStack?>("handle")
 }
