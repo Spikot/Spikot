@@ -51,6 +51,9 @@ public data class Version(
             val parsed = versionRegex.matcher(string)
             if (!parsed.matches()) {
                 val withoutPatchParsed = versionWithoutPatchRegex.matcher(string)
+                if(!withoutPatchParsed.matches())
+                    throw IllegalArgumentException("Malformed version notation: $string")
+
                 return Version(
                     withoutPatchParsed.group(1).toInt(),
                     withoutPatchParsed.group(2).toInt(),
