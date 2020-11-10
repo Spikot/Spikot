@@ -24,52 +24,52 @@ package io.heartpattern.spikot.nbt
 
 import java.util.*
 
-interface Tag<T : Any> {
-    val rawTag: Any
-    val type: TagType<T>
-    val value: T
+public interface Tag<T : Any> {
+    public val rawTag: Any
+    public val type: TagType<T>
+    public val value: T
 
-    fun isEmpty(): Boolean = false
-    fun copy(): Tag<T>
+    public fun isEmpty(): Boolean = false
+    public fun copy(): Tag<T>
 }
 
-interface NumericTag<T : Number> : Tag<T> {
-    val long: Long
+public interface NumericTag<T : Number> : Tag<T> {
+    public val long: Long
         get() = value.toLong()
-    val int: Int
+    public val int: Int
         get() = value.toInt()
-    val short: Short
+    public val short: Short
         get() = value.toShort()
-    val byte: Byte
+    public val byte: Byte
         get() = value.toByte()
-    val double: Double
+    public val double: Double
         get() = value.toDouble()
-    val float: Float
+    public val float: Float
         get() = value.toFloat()
 }
 
-interface EndTag : Tag<Unit> {
+public interface EndTag : Tag<Unit> {
     override val type: TagType<Unit>
         get() = TagType.END
 
     override fun copy(): EndTag
 }
 
-interface ByteTag : NumericTag<Byte> {
+public interface ByteTag : NumericTag<Byte> {
     override val type: TagType<Byte>
         get() = TagType.BYTE
 
     override fun copy(): ByteTag
 }
 
-interface ShortTag : NumericTag<Short> {
+public interface ShortTag : NumericTag<Short> {
     override val type: TagType<Short>
         get() = TagType.SHORT
 
     override fun copy(): ShortTag
 }
 
-interface IntTag : NumericTag<Int> {
+public interface IntTag : NumericTag<Int> {
 
     override val type: TagType<Int>
         get() = TagType.INT
@@ -78,7 +78,7 @@ interface IntTag : NumericTag<Int> {
 
 }
 
-interface LongTag : NumericTag<Long> {
+public interface LongTag : NumericTag<Long> {
     override val type: TagType<Long>
         get() = TagType.LONG
 
@@ -86,115 +86,115 @@ interface LongTag : NumericTag<Long> {
 
 }
 
-interface FloatTag : NumericTag<Float> {
+public interface FloatTag : NumericTag<Float> {
     override val type: TagType<Float>
         get() = TagType.FLOAT
 
     override fun copy(): FloatTag
 }
 
-interface DoubleTag : NumericTag<Double> {
+public interface DoubleTag : NumericTag<Double> {
     override val type: TagType<Double>
         get() = TagType.DOUBLE
 
     override fun copy(): DoubleTag
 }
 
-interface ByteArrayTag : Tag<ByteArray> {
+public interface ByteArrayTag : Tag<ByteArray> {
     override val type: TagType<ByteArray>
         get() = TagType.BYTE_ARRAY
 
     override fun copy(): ByteArrayTag
 }
 
-interface StringTag : Tag<String> {
-    override val type: TagType<String>
+public interface StringTag : Tag<String> {
+    public override val type: TagType<String>
         get() = TagType.STRING
 
-    override fun copy(): StringTag
+    public override fun copy(): StringTag
 }
 
-interface ListTag : Tag<List<Tag<*>>> {
-    override val type: TagType<List<Tag<*>>>
+public interface ListTag : Tag<List<Tag<*>>> {
+    public override val type: TagType<List<Tag<*>>>
         get() = TagType.LIST
 
     override fun copy(): ListTag
 
-    override fun isEmpty() = size == 0
-    operator fun get(index: Int): Tag<*>
-    fun add(element: Tag<*>)
-    fun add(index: Int, element: Tag<*>)
-    fun remove(index: Int): Tag<*>
+    override fun isEmpty(): Boolean = size == 0
+    public operator fun get(index: Int): Tag<*>
+    public fun add(element: Tag<*>)
+    public fun add(index: Int, element: Tag<*>)
+    public fun remove(index: Int): Tag<*>
 
-    fun getCompound(index: Int): CompoundTag
-    fun getInt(index: Int): Int
-    fun getIntArray(index: Int): IntArray
-    fun getDouble(index: Int): Double
-    fun getFloat(index: Int): Float
-    fun getString(index: Int): String
+    public fun getCompound(index: Int): CompoundTag
+    public fun getInt(index: Int): Int
+    public fun getIntArray(index: Int): IntArray
+    public fun getDouble(index: Int): Double
+    public fun getFloat(index: Int): Float
+    public fun getString(index: Int): String
 
-    val elementType: TagType<*>
-    val size: Int
+    public val elementType: TagType<*>
+    public val size: Int
 }
 
-interface CompoundTag : Tag<Map<String, Tag<*>>> {
-    override val type: TagType<Map<String, Tag<*>>>
+public interface CompoundTag : Tag<Map<String, Tag<*>>> {
+    public override val type: TagType<Map<String, Tag<*>>>
         get() = TagType.COMPOUND
 
-    override fun copy(): CompoundTag
+    public override fun copy(): CompoundTag
 
-    fun getAllKeys(): Set<String>
-    val size: Int
-    operator fun set(key: String, value: Tag<*>)
-    fun putByte(key: String, value: Byte)
-    fun putShort(key: String, value: Short)
-    fun putInt(key: String, value: Int)
-    fun putLong(key: String, value: Long)
-    fun putUUID(key: String, value: UUID)
-    fun putFloat(key: String, value: Float)
-    fun putDouble(key: String, value: Double)
-    fun putString(key: String, value: String)
-    fun putByteArray(key: String, value: ByteArray)
-    fun putIntArray(key: String, value: IntArray)
-    fun putIntArray(key: String, value: List<Int>)
-    fun putLongArray(key: String, value: LongArray)
-    fun putLongArray(key: String, value: List<Long>)
-    fun putBoolean(key: String, value: Boolean)
+    public fun getAllKeys(): Set<String>
+    public val size: Int
+    public operator fun set(key: String, value: Tag<*>)
+    public fun putByte(key: String, value: Byte)
+    public fun putShort(key: String, value: Short)
+    public fun putInt(key: String, value: Int)
+    public fun putLong(key: String, value: Long)
+    public fun putUUID(key: String, value: UUID)
+    public fun putFloat(key: String, value: Float)
+    public fun putDouble(key: String, value: Double)
+    public fun putString(key: String, value: String)
+    public fun putByteArray(key: String, value: ByteArray)
+    public fun putIntArray(key: String, value: IntArray)
+    public fun putIntArray(key: String, value: List<Int>)
+    public fun putLongArray(key: String, value: LongArray)
+    public fun putLongArray(key: String, value: List<Long>)
+    public fun putBoolean(key: String, value: Boolean)
 
-    fun getTagType(key: String): TagType<*>
-    operator fun contains(key: String): Boolean
-    fun contains(key: String, type: TagType<*>): Boolean
-    fun hasUUID(key: String): Boolean
+    public fun getTagType(key: String): TagType<*>
+    public operator fun contains(key: String): Boolean
+    public fun contains(key: String, type: TagType<*>): Boolean
+    public fun hasUUID(key: String): Boolean
 
-    fun get(key: String): Tag<*>
-    fun getByte(key: String): Byte
-    fun getShort(key: String): Short
-    fun getInt(key: String): Int
-    fun getLong(key: String): Long
-    fun getUUID(key: String): UUID
-    fun getFloat(key: String): Float
-    fun getDouble(key: String): Double
-    fun getString(key: String): String
-    fun getByteArray(key: String): ByteArray
-    fun getIntArray(key: String): IntArray
-    fun getLongArray(key: String): LongArray
-    fun getCompound(key: String): CompoundTag
-    fun getList(key: String, type: TagType<*>): ListTag
-    fun getBoolean(key: String): Boolean
+    public fun get(key: String): Tag<*>
+    public fun getByte(key: String): Byte
+    public fun getShort(key: String): Short
+    public fun getInt(key: String): Int
+    public fun getLong(key: String): Long
+    public fun getUUID(key: String): UUID
+    public fun getFloat(key: String): Float
+    public fun getDouble(key: String): Double
+    public fun getString(key: String): String
+    public fun getByteArray(key: String): ByteArray
+    public fun getIntArray(key: String): IntArray
+    public fun getLongArray(key: String): LongArray
+    public fun getCompound(key: String): CompoundTag
+    public fun getList(key: String, type: TagType<*>): ListTag
+    public fun getBoolean(key: String): Boolean
 
-    fun remove(key: String)
+    public fun remove(key: String)
     override fun isEmpty(): Boolean
-    fun merge(compound: CompoundTag)
+    public fun merge(compound: CompoundTag)
 }
 
-interface IntArrayTag : Tag<IntArray> {
+public interface IntArrayTag : Tag<IntArray> {
     override val type: TagType<IntArray>
         get() = TagType.INT_ARRAY
 
     override fun copy(): IntArrayTag
 }
 
-interface LongArrayTag : Tag<LongArray> {
+public interface LongArrayTag : Tag<LongArray> {
     override val type: TagType<LongArray>
         get() = TagType.LONG_ARRAY
 

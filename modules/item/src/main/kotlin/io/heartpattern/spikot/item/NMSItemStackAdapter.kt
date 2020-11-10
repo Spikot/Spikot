@@ -22,19 +22,20 @@
 
 package io.heartpattern.spikot.item
 
-import io.heartpattern.spikot.adapter.getAdapterOf
+import io.heartpattern.spikot.Spikot
+import io.heartpattern.spikot.adapter.adapterOf
 import io.heartpattern.spikot.nbt.CompoundTag
 import org.bukkit.inventory.ItemStack
 
-interface NMSItemStackAdapter {
-    fun loadFromTag(tag: CompoundTag): ItemStack
-    fun saveToTag(item: ItemStack): CompoundTag
-    fun getTag(item: ItemStack): CompoundTag?
-    fun hasTag(item: ItemStack): Boolean
-    fun setTag(item: ItemStack, tag: CompoundTag?)
-    fun isCraftItemStack(item: ItemStack): Boolean
-    fun isNMSCraftItemStack(item: ItemStack): Boolean
-    fun toCraftItemStack(item: ItemStack): ItemStack
+public interface NMSItemStackAdapter {
+    public fun loadFromTag(tag: CompoundTag): ItemStack
+    public fun saveToTag(item: ItemStack): CompoundTag
+    public fun getTag(item: ItemStack): CompoundTag?
+    public fun hasTag(item: ItemStack): Boolean
+    public fun setTag(item: ItemStack, tag: CompoundTag?)
+    public fun isCraftItemStack(item: ItemStack): Boolean
+    public fun isNMSCraftItemStack(item: ItemStack): Boolean
+    public fun toCraftItemStack(item: ItemStack): ItemStack
 
-    companion object Impl : NMSItemStackAdapter by getAdapterOf()
+    public companion object Impl : NMSItemStackAdapter by adapterOf<Spikot, NMSItemStackAdapter>()
 }

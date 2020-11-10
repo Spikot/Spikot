@@ -23,18 +23,9 @@
 package io.heartpattern.spikot.adapter
 
 import io.heartpattern.spikot.SpikotPlugin
+import io.heartpattern.spikot.bean.getBean
 import kotlin.reflect.KClass
 
-inline fun <reified T : Any> getAdapterOf(): T {
-    return getAdapterOf(T::class)
-}
-
-fun <T : Any> getAdapterOf(type: KClass<T>): T {
-    @Suppress("UNCHECKED_CAST")
-    return SpikotPlugin.allSpikotPlugins
-        .asSequence()
-        .flatMap { it.serverScopeBeanInstanceRegistry.beans.asSequence() }
-        .firstOrNull { type.isInstance(it.instance) }
-        ?.instance as? T
-        ?: throw AdapterImplementationNotFoundException(type)
+public inline fun <reified P: SpikotPlugin, reified T: Any> adapterOf(): T{
+    return SpikotPlugin.allSpikotPlugins.single{it is P}.singletonScope.getBean()
 }

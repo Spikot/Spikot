@@ -24,15 +24,12 @@ rootProject.name = "Spikot"
 
 val modules = listOf<String>(
     "core",
-    "packet"
-//    "command",
-//    "command:predef",
-//    "chat",
-//    "nbt",
-//    "item",
-//    "service",
-//    "serialization",
-//    "adapter",
+    "packet",
+    "achievement",
+    "chat",
+    "nbt",
+    "item",
+    "adapter"
 )
 
 val examples = listOf<String>(

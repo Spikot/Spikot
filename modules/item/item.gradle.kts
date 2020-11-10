@@ -21,11 +21,17 @@
  */
 
 plugins {
-    baseBuild
     spigotBuild
 }
 
+supportingVersion(
+    Version.Spigot.V16,
+    Version.Spigot.V15,
+    Version.Spigot.V12
+)
+
 dependencies {
+    api(modules("core"))
     api(modules("nbt"))
     api(modules("adapter"))
 }

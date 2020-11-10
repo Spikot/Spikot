@@ -22,44 +22,45 @@
 
 package io.heartpattern.spikot.nbt
 
-import io.heartpattern.spikot.adapter.getAdapterOf
+import io.heartpattern.spikot.Spikot
+import io.heartpattern.spikot.adapter.adapterOf
 
-interface NBTAdapter {
-    fun createEndTag(): EndTag
-    fun createByteTag(value: Byte): ByteTag
-    fun createShortTag(value: Short): ShortTag
-    fun createIntTag(value: Int): IntTag
-    fun createLongTag(value: Long): LongTag
-    fun createFloatTag(value: Float): FloatTag
-    fun createDoubleTag(value: Double): DoubleTag
-    fun createByteArrayTag(value: ByteArray): ByteArrayTag
-    fun createByteArrayTag(value: List<Byte>): ByteArrayTag
-    fun createStringTag(): StringTag
-    fun createStringTag(value: String): StringTag
-    fun createListTag(): ListTag
-    fun createCompoundTag(): CompoundTag
-    fun createIntArrayTag(value: IntArray): IntArrayTag
-    fun createIntArrayTag(value: List<Int>): IntArrayTag
-    fun createLongArrayTag(value: LongArray): LongArrayTag
-    fun createLongArrayTag(value: List<Long>): LongArrayTag
+public interface NBTAdapter {
+    public fun createEndTag(): EndTag
+    public fun createByteTag(value: Byte): ByteTag
+    public fun createShortTag(value: Short): ShortTag
+    public fun createIntTag(value: Int): IntTag
+    public fun createLongTag(value: Long): LongTag
+    public fun createFloatTag(value: Float): FloatTag
+    public fun createDoubleTag(value: Double): DoubleTag
+    public fun createByteArrayTag(value: ByteArray): ByteArrayTag
+    public fun createByteArrayTag(value: List<Byte>): ByteArrayTag
+    public fun createStringTag(): StringTag
+    public fun createStringTag(value: String): StringTag
+    public fun createListTag(): ListTag
+    public fun createCompoundTag(): CompoundTag
+    public fun createIntArrayTag(value: IntArray): IntArrayTag
+    public fun createIntArrayTag(value: List<Int>): IntArrayTag
+    public fun createLongArrayTag(value: LongArray): LongArrayTag
+    public fun createLongArrayTag(value: List<Long>): LongArrayTag
 
-    fun <T : Any> createTag(type: TagType<T>): Tag<T>
+    public fun <T : Any> createTag(type: TagType<T>): Tag<T>
 
-    fun wrapEndTag(tag: Any): EndTag
-    fun wrapByteTag(tag: Any): ByteTag
-    fun wrapShortTag(tag: Any): ShortTag
-    fun wrapIntTag(tag: Any): IntTag
-    fun wrapLongTag(tag: Any): LongTag
-    fun wrapFloatTag(tag: Any): FloatTag
-    fun wrapDoubleTag(tag: Any): DoubleTag
-    fun wrapByteArrayTag(tag: Any): ByteArrayTag
-    fun wrapStringTag(tag: Any): StringTag
-    fun wrapListTag(tag: Any): ListTag
-    fun wrapCompoundTag(tag: Any): CompoundTag
-    fun wrapIntArrayTag(tag: Any): IntArrayTag
-    fun wrapLongArrayTag(tag: Any): LongArrayTag
+    public fun wrapEndTag(tag: Any): EndTag
+    public fun wrapByteTag(tag: Any): ByteTag
+    public fun wrapShortTag(tag: Any): ShortTag
+    public fun wrapIntTag(tag: Any): IntTag
+    public fun wrapLongTag(tag: Any): LongTag
+    public fun wrapFloatTag(tag: Any): FloatTag
+    public fun wrapDoubleTag(tag: Any): DoubleTag
+    public fun wrapByteArrayTag(tag: Any): ByteArrayTag
+    public fun wrapStringTag(tag: Any): StringTag
+    public fun wrapListTag(tag: Any): ListTag
+    public fun wrapCompoundTag(tag: Any): CompoundTag
+    public fun wrapIntArrayTag(tag: Any): IntArrayTag
+    public fun wrapLongArrayTag(tag: Any): LongArrayTag
 
-    fun wrapTag(tag: Any): Tag<*>
+    public fun wrapTag(tag: Any): Tag<*>
 
-    companion object Impl : NBTAdapter by getAdapterOf()
+    public companion object Impl : NBTAdapter by adapterOf<Spikot, NBTAdapter>()
 }

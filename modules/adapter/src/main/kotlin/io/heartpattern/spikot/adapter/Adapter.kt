@@ -23,17 +23,15 @@
 package io.heartpattern.spikot.adapter
 
 import io.heartpattern.spikot.annotation.AliasFor
-import io.heartpattern.spikot.Priority
-import io.heartpattern.spikot.core.conditionals.VersionCondition
-import io.heartpattern.spikot.core.scopes.server.ServerScope
-import kotlin.reflect.KClass
+import io.heartpattern.spikot.bean.Component
+import io.heartpattern.spikot.bean.LoadOrder
+import io.heartpattern.spikot.conditions.VersionCondition
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-@ServerScope
-@Priority(priority = Priority.EARLIEST)
+@Component
+@LoadOrder(LoadOrder.FASTEST)
 @VersionCondition("")
-annotation class Adapter(
-    val adapterOf: KClass<*>,
+public annotation class Adapter(
     @get:AliasFor(VersionCondition::class, "version") val version: String
 )

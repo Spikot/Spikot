@@ -25,5 +25,4 @@ package io.heartpattern.spikot
 /**
  * Spikot framework plugin
  */
-@PublishedApi
-internal class Spikot : SpikotPlugin()
+public class Spikot : SpikotPlugin()

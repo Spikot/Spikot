@@ -22,17 +22,18 @@
 
 package io.heartpattern.spikot.nbt
 
-import io.heartpattern.spikot.adapter.getAdapterOf
+import io.heartpattern.spikot.Spikot
+import io.heartpattern.spikot.adapter.adapterOf
 import java.io.DataInputStream
 import java.io.DataOutput
 import java.io.InputStream
 import java.io.OutputStream
 
-interface NBTIOAdapter {
-    fun readCompressed(input: InputStream): CompoundTag
-    fun writeCompressed(tag: CompoundTag, output: OutputStream)
-    fun read(input: DataInputStream): CompoundTag
-    fun write(tag: CompoundTag, output: DataOutput)
+public interface NBTIOAdapter {
+    public fun readCompressed(input: InputStream): CompoundTag
+    public fun writeCompressed(tag: CompoundTag, output: OutputStream)
+    public fun read(input: DataInputStream): CompoundTag
+    public fun write(tag: CompoundTag, output: DataOutput)
 
-    companion object Impl : NBTIOAdapter by getAdapterOf()
+    public companion object Impl : NBTIOAdapter by adapterOf<Spikot, NBTIOAdapter>()
 }

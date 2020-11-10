@@ -26,22 +26,22 @@ import net.md_5.bungee.api.ChatMessageType
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-val chat
+public val chat: FancyChat
     get() = FancyChat()
 
-fun CommandSender.sendMessage(chat: FancyChat) {
+public fun CommandSender.sendMessage(chat: FancyChat) {
     spigot().sendMessage(*chat.build())
 }
 
-fun Player.sendActionBar(chat: FancyChat) {
+public fun Player.sendActionBar(chat: FancyChat) {
     spigot().sendMessage(ChatMessageType.ACTION_BAR, *chat.build())
 }
 
-fun Player.sendSystem(chat: FancyChat) {
+public fun Player.sendSystem(chat: FancyChat) {
     spigot().sendMessage(ChatMessageType.SYSTEM, *chat.build())
 }
 
-fun List<FancyChat>.joinToLine(): FancyChat {
+public fun List<FancyChat>.joinToLine(): FancyChat {
     if (size == 0)
         return chat
 

@@ -28,43 +28,43 @@ import org.bukkit.inventory.ItemStack
 /**
  * Ensure nms backed ItemStack
  */
-class NMSItemStack private constructor(
-    val bukkitStack: ItemStack
+public class NMSItemStack private constructor(
+    public val bukkitStack: ItemStack
 ) {
-    var tag: CompoundTag?
+    public var tag: CompoundTag?
         get() = NMSItemStackAdapter.getTag(bukkitStack)
         set(value) {
             NMSItemStackAdapter.setTag(bukkitStack, value)
         }
 
-    fun hasTag(): Boolean {
+    public fun hasTag(): Boolean {
         return NMSItemStackAdapter.hasTag(bukkitStack)
     }
 
-    fun saveToTag(): CompoundTag {
+    public fun saveToTag(): CompoundTag {
         return NMSItemStackAdapter.saveToTag(bukkitStack)
     }
 
-    companion object {
-        fun asMirror(item: ItemStack): NMSItemStack? {
+    public companion object {
+        public fun asMirror(item: ItemStack): NMSItemStack? {
             return if (NMSItemStackAdapter.isNMSCraftItemStack(item))
                 NMSItemStack(item)
             else
                 null
         }
 
-        fun asCopy(item: ItemStack): NMSItemStack {
+        public fun asCopy(item: ItemStack): NMSItemStack {
             return NMSItemStack(NMSItemStackAdapter.toCraftItemStack(item))
         }
 
-        fun asMirrorOrCopy(item: ItemStack): NMSItemStack {
+        public fun asMirrorOrCopy(item: ItemStack): NMSItemStack {
             return if (NMSItemStackAdapter.isNMSCraftItemStack(item))
                 NMSItemStack(item)
             else
                 NMSItemStack(NMSItemStackAdapter.toCraftItemStack(item))
         }
 
-        fun loadTag(tag: CompoundTag): NMSItemStack {
+        public fun loadTag(tag: CompoundTag): NMSItemStack {
             return NMSItemStack(NMSItemStackAdapter.loadFromTag(tag))
         }
     }

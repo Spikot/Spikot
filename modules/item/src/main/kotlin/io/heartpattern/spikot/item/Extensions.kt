@@ -25,11 +25,11 @@ package io.heartpattern.spikot.item
 import io.heartpattern.spikot.nbt.CompoundTag
 import org.bukkit.inventory.ItemStack
 
-fun ItemStack.saveToTag(): CompoundTag {
+public fun ItemStack.saveToTag(): CompoundTag {
     return if (NMSItemStackAdapter.isNMSCraftItemStack(this)) NMSItemStackAdapter.saveToTag(this)
     else NMSItemStackAdapter.saveToTag(NMSItemStackAdapter.toCraftItemStack(this))
 }
 
-fun loadItemStackFromTag(tag: CompoundTag): ItemStack {
+public fun loadItemStackFromTag(tag: CompoundTag): ItemStack {
     return NMSItemStackAdapter.loadFromTag(tag)
 }

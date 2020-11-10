@@ -63,5 +63,8 @@ public data class Version(
                 parsed.group(3).toInt()
             )
         }
+
+        public val MINIMUM: Version = Version(0, 0, 0)
+        public val MAXIMUM: Version = Version(999, 999, 999)
     }
 }

@@ -24,6 +24,6 @@ package io.heartpattern.spikot.adapter
 
 import kotlin.reflect.KClass
 
-data class AdapterImplementationNotFoundException(val adapter: KClass<*>) : Exception(
+public data class AdapterImplementationNotFoundException(val adapter: KClass<*>) : Exception(
     "Adapter implementation of $adapter is not found"
 )

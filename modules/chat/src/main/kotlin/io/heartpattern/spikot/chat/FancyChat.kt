@@ -32,7 +32,7 @@ import java.util.*
 /**
  * Chat builder dsl
  */
-class FancyChat internal constructor() {
+public class FancyChat internal constructor() {
     private val components = LinkedList<BaseComponent>()
     private var last: TextComponent = TextComponent("")
 
@@ -49,85 +49,85 @@ class FancyChat internal constructor() {
         return this
     }
 
-    val black
+    public val black: FancyChat
         get() = execute { color = BLACK }
 
-    val darkBlue
+    public val darkBlue: FancyChat
         get() = execute { color = DARK_BLUE }
 
-    val darkGreen
+    public val darkGreen: FancyChat
         get() = execute { color = DARK_GREEN }
 
-    val darkAqua
+    public val darkAqua: FancyChat
         get() = execute { color = DARK_AQUA }
 
-    val darkRed
+    public val darkRed: FancyChat
         get() = execute { color = DARK_RED }
 
-    val darkPurple
+    public val darkPurple: FancyChat
         get() = execute { color = DARK_PURPLE }
 
-    val gold
+    public val gold: FancyChat
         get() = execute { color = GOLD }
 
-    val gray
+    public val gray: FancyChat
         get() = execute { color = GRAY }
 
-    val darkGray
+    public val darkGray: FancyChat
         get() = execute { color = DARK_GRAY }
 
-    val blue
+    public val blue: FancyChat
         get() = execute { color = BLUE }
 
-    val green
+    public val green: FancyChat
         get() = execute { color = GREEN }
 
-    val aqua
+    public val aqua: FancyChat
         get() = execute { color = AQUA }
 
-    val red
+    public val red: FancyChat
         get() = execute { color = RED }
 
-    val lightPurple
+    public val lightPurple: FancyChat
         get() = execute { color = LIGHT_PURPLE }
 
-    val yellow
+    public val yellow: FancyChat
         get() = execute { color = YELLOW }
 
-    val white
+    public val white: FancyChat
         get() = execute { color = WHITE }
 
-    val obfuscate
+    public val obfuscate: FancyChat
         get() = execute { isObfuscated = true }
 
-    val bold
+    public val bold: FancyChat
         get() = execute { isBold = true }
 
-    val strike
+    public val strike: FancyChat
         get() = execute { isStrikethrough = true }
 
-    val underline
+    public val underline: FancyChat
         get() = execute { isUnderlined = true }
 
-    val italic
+    public val italic: FancyChat
         get() = execute { isItalic = true }
 
-    val resetObfuscate
+    public val resetObfuscate: FancyChat
         get() = execute { isObfuscated = false }
 
-    val resetBold
+    public val resetBold: FancyChat
         get() = execute { isBold = false }
 
-    val resetStrike
+    public val resetStrike: FancyChat
         get() = execute { isStrikethrough = false }
 
-    val resetUnderline
+    public val resetUnderline: FancyChat
         get() = execute { isUnderlined = false }
 
-    val resetItalic
+    public val resetItalic: FancyChat
         get() = execute { isItalic = false }
 
-    val reset
+    public val reset: FancyChat
         get() = execute {
             color = null
             isBold = false
@@ -137,64 +137,70 @@ class FancyChat internal constructor() {
             isObfuscated = false
         }
 
-    val resetInsert
+    public val resetInsert: FancyChat
         get() = execute {
             insertion = null
         }
 
-    val resetHover
+    public val resetHover: FancyChat
         get() = execute {
             hoverEvent = null
         }
 
-    val resetClick
+    public val resetClick: FancyChat
         get() = execute {
             clickEvent = null
         }
 
-    val resetAll
+    public val resetAll: FancyChat
         get() = reset.resetInsert.resetHover.resetClick
 
-    fun insert(text: String) = execute {
+    public fun insert(text: String): FancyChat = execute {
         insertion = text
     }
 
-    fun openUrl(url: String) = execute {
+    public fun openUrl(url: String): FancyChat = execute {
         clickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, url)
     }
 
-    fun runCommand(command: String) = execute {
+    public fun runCommand(command: String): FancyChat = execute {
         clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, command)
     }
 
-    fun suggestCommand(command: String) = execute {
+    public fun suggestCommand(command: String): FancyChat = execute {
         clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)
     }
 
-    fun changePage(page: Int) = execute {
+    public fun changePage(page: Int): FancyChat = execute {
         clickEvent = ClickEvent(ClickEvent.Action.CHANGE_PAGE, page.toString())
     }
 
-    fun hoverText(text: String) = execute {
+    // For backward compatibility, do not use Content.
+    @Suppress("DEPRECATION")
+    public fun hoverText(text: String): FancyChat = execute {
         hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, arrayOf(TextComponent(text)))
     }
 
-    fun hoverText(text: Array<BaseComponent>) = execute {
+    @Suppress("DEPRECATION")
+    public fun hoverText(text: Array<BaseComponent>): FancyChat = execute {
         hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, text)
     }
 
-    fun hoverText(text: FancyChat) = execute {
+    @Suppress("DEPRECATION")
+    public fun hoverText(text: FancyChat): FancyChat = execute {
         hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, text.build())
     }
 
-    fun hoverItem(item: ItemStack) = execute {
+    @Suppress("DEPRECATION")
+    public fun hoverItem(item: ItemStack): FancyChat = execute {
         hoverEvent = HoverEvent(
             HoverEvent.Action.SHOW_ITEM,
             arrayOf(TextComponent(item.saveToTag().rawTag.toString()))
         )
     }
 
-    fun hoverEntity(entity: Entity) = execute {
+    @Suppress("DEPRECATION")
+    public fun hoverEntity(entity: Entity): FancyChat = execute {
         hoverEvent = HoverEvent(
             HoverEvent.Action.SHOW_ENTITY,
             arrayOf(TextComponent("""{
@@ -205,23 +211,23 @@ class FancyChat internal constructor() {
         )
     }
 
-    operator fun invoke(text: String) = executeAppend {
+    public operator fun invoke(text: String): FancyChat = executeAppend {
         this@executeAppend.text = text
     }
 
-    operator fun invoke(text: FancyChat): FancyChat {
+    public operator fun invoke(text: FancyChat): FancyChat {
         components.addAll(text.components)
         last = TextComponent()
         last.copyFormatting(components.last)
         return this
     }
 
-    operator fun get(text: FancyChat): FancyChat {
+    public operator fun get(text: FancyChat): FancyChat {
         components.addAll(text.components)
         return this
     }
 
-    fun setAll(
+    public fun setAll(
         retention: ComponentBuilder.FormatRetention = ComponentBuilder.FormatRetention.ALL,
         replace: Boolean = true,
         configure: FancyChat.() -> Unit
@@ -234,12 +240,12 @@ class FancyChat internal constructor() {
         return this
     }
 
-    fun copy(): FancyChat {
+    public fun copy(): FancyChat {
         val copied = FancyChat()
         copied.components.addAll(components)
         copied.last = TextComponent(last)
         return copied
     }
 
-    fun build(): Array<BaseComponent> = components.toTypedArray()
+    public fun build(): Array<BaseComponent> = components.toTypedArray()
 }

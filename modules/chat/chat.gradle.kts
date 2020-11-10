@@ -21,7 +21,6 @@
  */
 
 plugins {
-    baseBuild
     spigotBuild
 }
 

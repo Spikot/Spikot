@@ -31,6 +31,7 @@ supportingVersion(
 )
 
 dependencies{
-    implementation(modules("core"))
+    api(modules("core"))
     implementation(kotlin("reflect"))
+    api(modules("adapter"))
 }

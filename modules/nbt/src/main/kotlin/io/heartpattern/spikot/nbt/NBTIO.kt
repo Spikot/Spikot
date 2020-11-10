@@ -24,9 +24,9 @@ package io.heartpattern.spikot.nbt
 
 import java.io.*
 
-fun InputStream.readCompoundTag(): CompoundTag = NBTIOAdapter.readCompressed(this)
-fun OutputStream.writeCompoundTag(tag: CompoundTag) = NBTIOAdapter.writeCompressed(tag, this)
-fun DataInputStream.readCompoundTag(): CompoundTag = NBTIOAdapter.read(this)
-fun DataOutput.writeCompoundTag(tag: CompoundTag) = NBTIOAdapter.write(tag, this)
-fun ByteArray.parseCompoundTag(): CompoundTag = ByteArrayInputStream(this).readCompoundTag()
-fun CompoundTag.toByteArray(): ByteArray = ByteArrayOutputStream().apply { writeCompoundTag(this@toByteArray) }.toByteArray()
+public fun InputStream.readCompoundTag(): CompoundTag = NBTIOAdapter.readCompressed(this)
+public fun OutputStream.writeCompoundTag(tag: CompoundTag): Unit = NBTIOAdapter.writeCompressed(tag, this)
+public fun DataInputStream.readCompoundTag(): CompoundTag = NBTIOAdapter.read(this)
+public fun DataOutput.writeCompoundTag(tag: CompoundTag): Unit = NBTIOAdapter.write(tag, this)
+public fun ByteArray.parseCompoundTag(): CompoundTag = ByteArrayInputStream(this).readCompoundTag()
+public fun CompoundTag.toByteArray(): ByteArray = ByteArrayOutputStream().apply { writeCompoundTag(this@toByteArray) }.toByteArray()

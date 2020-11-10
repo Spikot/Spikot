@@ -39,8 +39,10 @@ private object VersionConditionEvaluator : ConditionEvaluator {
 
         return if (version.contains("~")) { // Range
             val token = version.split('~')
-            val minimum = Version.fromString(token[0].trim())
-            val maximum = Version.fromString(token[1].trim())
+            val minimumRaw = token[0].trim()
+            val maximumRaw = token[1].trim()
+            val minimum = if (minimumRaw.isEmpty()) Version.MINIMUM else Version.fromString(minimumRaw)
+            val maximum = if (maximumRaw.isEmpty()) Version.MAXIMUM else Version.fromString(maximumRaw)
             MINECRAFT_VERSION in minimum..maximum
         } else {
             MINECRAFT_VERSION == Version.fromString(version)
