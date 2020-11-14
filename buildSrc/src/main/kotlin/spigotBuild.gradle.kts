@@ -46,6 +46,7 @@ val mainJarTask = tasks.create<Jar>("mainJar") {
 }
 
 val mainSourceJarTask = tasks.create<Jar>("mainSourceJar") {
+    archiveClassifier.set("sources")
     from(mainSourceSet.allSource)
 }
 
