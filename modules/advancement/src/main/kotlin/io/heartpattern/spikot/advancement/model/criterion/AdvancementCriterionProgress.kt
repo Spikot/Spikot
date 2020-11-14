@@ -20,22 +20,41 @@
  * SOFTWARE.
  */
 
-package io.heartpattern.spikot.util
+package io.heartpattern.spikot.advancement.model.criterion
 
-/**
- * Lower casing first character
- */
-public fun String.toFirstLowerCase(): String = this[0].toLowerCase() + substring(1)
+import java.time.LocalDateTime
 
-/**
- * Upper casing first character
- */
-public fun String.toFirstUpperCase(): String = this[0].toUpperCase() + substring(1)
+public sealed class AdvancementCriterionProgress {
+    public abstract val isDone: Boolean
 
-public fun randomString(length: Int, pool: String = "abcdefghijklmnopqrstuvwxyz0123456789"): String{
-    return buildString(length){
-        repeat(length){
-            append(pool.random())
+    public object Incomplete : AdvancementCriterionProgress() {
+        override val isDone: Boolean
+            get() = false
+
+        override fun toString(): String {
+            return "AdvancementCriterionProgress.Incomplete"
+        }
+    }
+
+    public class Complete(public val obtained: LocalDateTime) : AdvancementCriterionProgress() {
+        override val isDone: Boolean
+            get() = true
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Complete) return false
+
+            if (obtained != other.obtained) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return obtained.hashCode()
+        }
+
+        override fun toString(): String {
+            return "Complete(obtained=$obtained)"
         }
     }
 }

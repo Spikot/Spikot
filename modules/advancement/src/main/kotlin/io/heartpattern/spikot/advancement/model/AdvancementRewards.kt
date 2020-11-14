@@ -20,22 +20,17 @@
  * SOFTWARE.
  */
 
-package io.heartpattern.spikot.util
+package io.heartpattern.spikot.advancement.model
 
-/**
- * Lower casing first character
- */
-public fun String.toFirstLowerCase(): String = this[0].toLowerCase() + substring(1)
+import io.heartpattern.spikot.ResourceLocation
 
-/**
- * Upper casing first character
- */
-public fun String.toFirstUpperCase(): String = this[0].toUpperCase() + substring(1)
 
-public fun randomString(length: Int, pool: String = "abcdefghijklmnopqrstuvwxyz0123456789"): String{
-    return buildString(length){
-        repeat(length){
-            append(pool.random())
-        }
+public data class AdvancementRewards(
+    val recipes: List<ResourceLocation>,
+    val loot: List<ResourceLocation>,
+    val experience: Int
+){
+    public companion object{
+        public val EMPTY: AdvancementRewards = AdvancementRewards(emptyList(), emptyList(), 0)
     }
 }

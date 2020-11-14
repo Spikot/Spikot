@@ -20,22 +20,43 @@
  * SOFTWARE.
  */
 
-package io.heartpattern.spikot.util
+package io.heartpattern.spikot
 
-/**
- * Lower casing first character
- */
-public fun String.toFirstLowerCase(): String = this[0].toLowerCase() + substring(1)
+import org.bukkit.NamespacedKey
+import org.bukkit.plugin.Plugin
+import java.util.*
 
-/**
- * Upper casing first character
- */
-public fun String.toFirstUpperCase(): String = this[0].toUpperCase() + substring(1)
+private val namespacePattern = Regex("[a-z0-9._-]+")
+private val idPattern = Regex("[a-z0-9/._-]+")
 
-public fun randomString(length: Int, pool: String = "abcdefghijklmnopqrstuvwxyz0123456789"): String{
-    return buildString(length){
-        repeat(length){
-            append(pool.random())
+public data class ResourceLocation(
+    val namespace: String,
+    val path: String
+){
+    public constructor(plugin: Plugin, id: String): this(plugin.name.toLowerCase(Locale.ROOT), id)
+
+    init{
+        check(namespacePattern.matches(namespace)){
+            "Illegal namespace. Must be [a-z0-9._-]: $namespace"
+        }
+        check(idPattern.matches(path)){
+            "Illegal id. Must be [a-z0-9/._-]: $path"
+        }
+        check(namespace.length + path.length + 1 < 256){
+            "NamespaceId must be less than 256 characters: $namespace:$path"
+        }
+    }
+
+    public fun toNamespacedKey(): NamespacedKey{
+        @Suppress("DEPRECATION")
+        return NamespacedKey(namespace, path)
+    }
+
+    override fun toString(): String = "$namespace:$path"
+
+    public companion object{
+        public fun minecraft(id: String): ResourceLocation{
+            return ResourceLocation("minecraft", id)
         }
     }
 }

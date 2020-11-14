@@ -25,7 +25,7 @@ rootProject.name = "Spikot"
 val modules = listOf<String>(
     "core",
     "packet",
-    "achievement",
+    "advancement",
     "chat",
     "nbt",
     "item",

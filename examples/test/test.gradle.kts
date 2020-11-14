@@ -32,6 +32,7 @@ repositories{
 dependencies {
     implementation(modules("core"))
     implementation(modules("packet"))
+    implementation(modules("advancement"))
     implementation("org.spigotmc", "spigot-api", "1.16.2-R0.1-SNAPSHOT")
     implementation("org.spigotmc", "spigot", "1.16.2-R0.1-SNAPSHOT")
 }
@@ -39,6 +40,10 @@ dependencies {
 spigot {
     main = "io.heartpattern.spikot.test.TestPlugin"
     depends = listOf("Spikot")
+
+    commands{
+        create("test_achievement")
+    }
 }
 
 tasks {

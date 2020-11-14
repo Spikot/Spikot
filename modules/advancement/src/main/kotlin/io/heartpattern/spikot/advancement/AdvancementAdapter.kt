@@ -20,22 +20,24 @@
  * SOFTWARE.
  */
 
-package io.heartpattern.spikot.util
+package io.heartpattern.spikot.advancement
 
-/**
- * Lower casing first character
- */
-public fun String.toFirstLowerCase(): String = this[0].toLowerCase() + substring(1)
+import io.heartpattern.spikot.ResourceLocation
+import io.heartpattern.spikot.Spikot
+import io.heartpattern.spikot.SpikotPlugin
+import io.heartpattern.spikot.adapter.adapterOf
+import io.heartpattern.spikot.advancement.model.AdvancementContainer
+import io.heartpattern.spikot.advancement.model.AdvancementProgress
+import org.bukkit.entity.Player
 
-/**
- * Upper casing first character
- */
-public fun String.toFirstUpperCase(): String = this[0].toUpperCase() + substring(1)
+public interface AdvancementAdapter {
+    public fun sendAdvancementData(
+        player: Player,
+        reset: Boolean,
+        add: AdvancementContainer,
+        remove: Set<ResourceLocation>,
+        progress: Map<ResourceLocation, AdvancementProgress>
+    )
 
-public fun randomString(length: Int, pool: String = "abcdefghijklmnopqrstuvwxyz0123456789"): String{
-    return buildString(length){
-        repeat(length){
-            append(pool.random())
-        }
-    }
+    public companion object Impl: AdvancementAdapter by adapterOf<Spikot, AdvancementAdapter>()
 }

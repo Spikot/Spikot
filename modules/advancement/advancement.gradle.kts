@@ -20,22 +20,18 @@
  * SOFTWARE.
  */
 
-package io.heartpattern.spikot.util
+plugins {
+    spigotBuild
+}
 
-/**
- * Lower casing first character
- */
-public fun String.toFirstLowerCase(): String = this[0].toLowerCase() + substring(1)
+supportingVersion(
+    Version.Spigot.V16,
+    Version.Spigot.V15,
+    Version.Spigot.V12
+)
 
-/**
- * Upper casing first character
- */
-public fun String.toFirstUpperCase(): String = this[0].toUpperCase() + substring(1)
-
-public fun randomString(length: Int, pool: String = "abcdefghijklmnopqrstuvwxyz0123456789"): String{
-    return buildString(length){
-        repeat(length){
-            append(pool.random())
-        }
-    }
+dependencies {
+    implementation(kotlin("reflect"))
+    implementation(modules("core"))
+    implementation(modules("packet"))
 }
