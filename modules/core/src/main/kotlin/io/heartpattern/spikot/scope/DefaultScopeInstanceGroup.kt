@@ -54,10 +54,10 @@ public class DefaultScopeInstanceGroup<Q>(
             configurator(qualifier)
         }
 
+        scopes[qualifier] = scope
+
         scope.preInitializeBeanProcessor()
         scope.preInitializeBeans()
-
-        scopes[qualifier] = scope
     }
 
     internal fun destroy(qualifier: Q) {
