@@ -27,7 +27,7 @@ import io.heartpattern.spikot.SpikotPlugin
 /**
  * Scope instance that handle single plugin.
  */
-public class DefaultScopeInstanceGroup<Q>(
+public class DefaultPluginGroupScopeInstance<Q>(
     public override val plugin: SpikotPlugin,
     public override val scope: String,
     private val configurator: ScopeInstanceBuilder.(Q) -> Unit,

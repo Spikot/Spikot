@@ -31,18 +31,15 @@ import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.LinkedHashSet
 
 private val logger = KotlinLogging.logger {}
 
 public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
-    private val instances = LinkedHashMap<String, DefaultScopeInstanceGroup<Q>>()
-    private val availableQualifier = LinkedHashSet<Q>()
+    private val instances = LinkedHashMap<String, DefaultPluginGroupScopeInstance<Q>>()
+    private val scopeInfo = LinkedHashMap<Q, ScopeInfo>()
 
     public val activeQualifiers: Set<Q>
-        get() = availableQualifier
+        get() = scopeInfo.keys
 
     public abstract val scope: String
     protected abstract fun DefaultScopeHandlerConfig.configure(plugin: SpikotPlugin, qualifier: Q)
@@ -81,13 +78,13 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
 
         logger.trace { "Create new ScopeInstanceGroup for $plugin" }
 
-        val instance = DefaultScopeInstanceGroup<Q>(
+        val instance = DefaultPluginGroupScopeInstance<Q>(
             plugin,
             scope,
-            {qualifier->
+            { qualifier ->
                 val config = DefaultScopeHandlerConfig(this, plugin)
                 config.configure(plugin, qualifier)
-                plugin.deepDependingSpikotPlugin.forEachMergedException("Exception thrown while adding parent scope"){depend->
+                plugin.deepDependingSpikotPlugin.forEachMergedException("Exception thrown while adding parent scope") { depend ->
                     val group = this@DefaultScopeHandler[depend]
                         ?: throw IllegalStateException("Depending plugin $depend is not loaded")
 
@@ -101,8 +98,9 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
 
         instances[plugin.name] = instance
 
-        availableQualifier.forEachMergedException("Exception thrown while enabling $scope for $plugin") {
-            instance.create(it)
+        scopeInfo.entries.forEachMergedException("Exception thrown while enabling $scope for $plugin") { (qualifier, info) ->
+            if (info.pluginSelector(plugin))
+                instance.create(qualifier)
         }
     }
 
@@ -112,26 +110,30 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
 
         logger.trace { "Destroy ScopeInstanceGroup for $plugin" }
 
-        availableQualifier.reversed().forEachMergedException("Exception thrown while disabling $scope for $plugin") {
-            instance.destroy(it)
+        scopeInfo.entries.reversed().forEachMergedException("Exception thrown while disabling $scope for $plugin") { (qualifier, _) ->
+            if (qualifier in instance.activeQualifiers)
+                instance.destroy(qualifier)
         }
     }
 
-    protected fun create(qualifier: Q) {
-        if (!availableQualifier.add(qualifier))
+    protected fun create(qualifier: Q, pluginSelector: (SpikotPlugin) -> Boolean = { true }) {
+        if (qualifier in scopeInfo)
             throw IllegalArgumentException("Qualifier $qualifier already exist in $scope")
 
+        scopeInfo[qualifier] = ScopeInfo(pluginSelector)
+
         instances.values.forEachMergedException("Exception thrown while creating $qualifier for $scope") {
-            it.create(qualifier)
+            if(pluginSelector(it.plugin))
+                it.create(qualifier)
         }
     }
 
     protected fun destroy(qualifier: Q) {
-        if (!availableQualifier.remove(qualifier))
-            throw IllegalArgumentException("Qualifier $qualifier is not registered in $scope")
+        scopeInfo.remove(qualifier) ?: throw IllegalArgumentException("Qualifier $qualifier is not registered in $scope")
 
         instances.values.reversed().forEachMergedException("Exception thrown while destroying $qualifier for $scope") {
-            it.destroy(qualifier)
+            if(qualifier in it.activeQualifiers)
+                it.destroy(qualifier)
         }
     }
 
@@ -150,7 +152,7 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
             }
         }
 
-        public fun <P> parentsIfExist(handler: ScopeHandler<P>, link: (SpikotPlugin) -> P){
+        public fun <P> parentsIfExist(handler: ScopeHandler<P>, link: (SpikotPlugin) -> P) {
             (plugin.dependingSpikotPlugin + plugin).forEachMergedException("Exception thrown while adding parent scope") inner@{ depend ->
                 val qualifier = link(depend)
                 val group = handler[depend]
@@ -161,7 +163,7 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
             }
         }
 
-        public fun parent(instance: ScopeInstance){
+        public fun parent(instance: ScopeInstance) {
             builder.parents.add(instance)
         }
 
@@ -169,4 +171,8 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
             builder.contextualObject[name] = value
         }
     }
+
+    private data class ScopeInfo(
+        val pluginSelector: (SpikotPlugin) -> Boolean
+    )
 }
