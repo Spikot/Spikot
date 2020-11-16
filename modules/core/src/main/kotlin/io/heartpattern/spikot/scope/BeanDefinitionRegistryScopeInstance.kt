@@ -59,10 +59,11 @@ public class BeanDefinitionRegistryScopeInstance constructor(
         "scope" to this
     )
 
-    override val allBeanProcessors: Collection<String>
-        get() = (parents.flatMap { it.allBeanProcessors } +
+    override val allBeanProcessors: Collection<String> by lazy {
+        (parents.flatMap { it.allBeanProcessors } +
             beans.values.filter { it.definition.type.isSubclassOf(BeanProcessor::class) }.map { it.definition.name })
             .toSet()
+    }
 
     private val beanProcessors = LinkedList<BeanProcessor>()
 
