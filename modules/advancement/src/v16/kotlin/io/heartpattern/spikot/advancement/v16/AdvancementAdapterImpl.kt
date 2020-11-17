@@ -33,16 +33,16 @@ import io.heartpattern.spikot.advancement.model.AdvancementRewards
 import io.heartpattern.spikot.advancement.model.criterion.AdvancementCriterion
 import io.heartpattern.spikot.advancement.model.trigger.ImpossibleTrigger
 import io.heartpattern.spikot.packet.sendPacket
-import net.minecraft.server.v1_16_R2.*
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_16_R2.util.CraftChatMessage
+import net.minecraft.server.v1_16_R3.*
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage
 import org.bukkit.entity.Player
-import net.minecraft.server.v1_16_R2.Advancement as NMSAdvancement
-import net.minecraft.server.v1_16_R2.AdvancementDisplay as NMSAdvancementDisplay
-import net.minecraft.server.v1_16_R2.AdvancementProgress as NMSAdvancementProgress
-import net.minecraft.server.v1_16_R2.AdvancementRewards as NMSAdvancementRewards
-import net.minecraft.server.v1_16_R2.Criterion as NMSCriterion
-import net.minecraft.server.v1_16_R2.AdvancementFrameType as NMSAdvancementFrameType
+import net.minecraft.server.v1_16_R3.Advancement as NMSAdvancement
+import net.minecraft.server.v1_16_R3.AdvancementDisplay as NMSAdvancementDisplay
+import net.minecraft.server.v1_16_R3.AdvancementProgress as NMSAdvancementProgress
+import net.minecraft.server.v1_16_R3.AdvancementRewards as NMSAdvancementRewards
+import net.minecraft.server.v1_16_R3.Criterion as NMSCriterion
+import net.minecraft.server.v1_16_R3.AdvancementFrameType as NMSAdvancementFrameType
 
 @Adapter("1.16~1.16.4")
 class AdvancementAdapterImpl : AdvancementAdapter {

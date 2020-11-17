@@ -33,8 +33,8 @@ dependencies {
     implementation(modules("core"))
     implementation(modules("packet"))
     implementation(modules("advancement"))
-    implementation("org.spigotmc", "spigot-api", "1.16.2-R0.1-SNAPSHOT")
-    implementation("org.spigotmc", "spigot", "1.16.2-R0.1-SNAPSHOT")
+    implementation("org.spigotmc", "spigot-api", "1.16.4-R0.1-SNAPSHOT")
+    implementation("org.spigotmc", "spigot", "1.16.4-R0.1-SNAPSHOT")
 }
 
 spigot {

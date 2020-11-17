@@ -3,7 +3,7 @@ package io.heartpattern.spikot.nbt.v16
 import io.heartpattern.spikot.adapter.Adapter
 import io.heartpattern.spikot.nbt.*
 import io.heartpattern.spikot.nbt.Tag
-import net.minecraft.server.v1_16_R2.*
+import net.minecraft.server.v1_16_R3.*
 
 @Adapter(version = "1.16~1.16.4")
 class NBTAdapterImpl : NBTAdapter {

@@ -29,7 +29,8 @@ val modules = listOf<String>(
     "chat",
     "nbt",
     "item",
-    "adapter"
+    "adapter",
+    "disposable-command"
 )
 
 val examples = listOf<String>(

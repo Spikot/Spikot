@@ -32,8 +32,8 @@ import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPromise
 import mu.KotlinLogging
-import net.minecraft.server.v1_16_R2.Packet
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer
+import net.minecraft.server.v1_16_R3.Packet
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
 
 @Adapter("1.16~1.16.4")

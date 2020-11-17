@@ -5,10 +5,10 @@ import io.heartpattern.spikot.item.NMSItemStackAdapter
 import io.heartpattern.spikot.nbt.CompoundTag
 import io.heartpattern.spikot.nbt.NBTAdapter
 import io.heartpattern.spikot.reflection.fieldDelegate
-import net.minecraft.server.v1_16_R2.NBTTagCompound
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack
+import net.minecraft.server.v1_16_R3.NBTTagCompound
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
 import org.bukkit.inventory.ItemStack
-import net.minecraft.server.v1_16_R2.ItemStack as NMSItemStack
+import net.minecraft.server.v1_16_R3.ItemStack as NMSItemStack
 
 @Adapter(version = "1.16~1.16.4")
 class NMSItemStackAdapterImpl : NMSItemStackAdapter {

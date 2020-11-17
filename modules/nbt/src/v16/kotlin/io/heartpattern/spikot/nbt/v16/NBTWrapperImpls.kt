@@ -3,7 +3,7 @@ package io.heartpattern.spikot.nbt.v16
 import io.heartpattern.spikot.nbt.*
 import io.heartpattern.spikot.nbt.Tag
 import io.heartpattern.spikot.reflection.fieldDelegate
-import net.minecraft.server.v1_16_R2.*
+import net.minecraft.server.v1_16_R3.*
 import java.util.*
 
 private val NBTTagLongArray.value by fieldDelegate<NBTTagLongArray, LongArray>("b")

@@ -4,8 +4,8 @@ import io.heartpattern.spikot.adapter.Adapter
 import io.heartpattern.spikot.nbt.CompoundTag
 import io.heartpattern.spikot.nbt.NBTAdapter
 import io.heartpattern.spikot.nbt.NBTIOAdapter
-import net.minecraft.server.v1_16_R2.NBTCompressedStreamTools
-import net.minecraft.server.v1_16_R2.NBTTagCompound
+import net.minecraft.server.v1_16_R3.NBTCompressedStreamTools
+import net.minecraft.server.v1_16_R3.NBTTagCompound
 import java.io.*
 
 @Adapter(version = "1.16~1.16.4")

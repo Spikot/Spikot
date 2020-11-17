@@ -25,7 +25,7 @@ package io.heartpattern.spikot.test
 import io.heartpattern.spikot.bean.Component
 import io.heartpattern.spikot.packet.PacketEvent
 import io.heartpattern.spikot.packet.PacketHandler
-import net.minecraft.server.v1_16_R2.PacketPlayOutChat
+import net.minecraft.server.v1_16_R3.PacketPlayOutChat
 
 @Component
 class PacketListener{
