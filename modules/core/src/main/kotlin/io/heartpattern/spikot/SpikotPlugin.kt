@@ -39,6 +39,7 @@ import mu.KotlinLogging
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.logging.Level
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -65,7 +66,11 @@ public abstract class SpikotPlugin(
         allSpikotPlugins.filter{it in set}
     }
 
-    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main + CoroutinePlugin(this)
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main + CoroutinePlugin(this) + CoroutineExceptionHandler { ctx, throwable ->
+        logger.log(Level.SEVERE, throwable){
+            "Uncatched exception from coroutine $ctx"
+        }
+    }
 
     private val classpath by lazy { JavaPluginClasspath.fromPlugin(this) }
     private val beanDefinitionRegistry by lazy { ClasspathBeanDefinitionRegistry(classpath) }
