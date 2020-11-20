@@ -22,36 +22,49 @@
 
 package io.heartpattern.spikot.disposablecommand
 
+import io.heartpattern.spikot.Spikot
+import io.heartpattern.spikot.bean.Component
+import io.heartpattern.spikot.bean.LoadOrder
+import io.heartpattern.spikot.bean.inject
 import io.heartpattern.spikot.extension.catchAll
-import kotlinx.coroutines.Job
 import mu.KotlinLogging
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
+import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.scheduler.BukkitRunnable
+import java.time.Duration
 import java.time.LocalTime
 import java.util.*
 
-private val logger = KotlinLogging.logger {}
-
-public class DisposableCommand internal constructor(
+public class DisposableCommand private constructor(
     public val uuid: UUID,
+    public val owingPlayer: Player?,
     public val accessCount: Int?,
     public val expire: LocalTime,
     private val callback: (Player) -> Unit,
-    private val removalTask: Job?
 ) {
-    public val command: String = "${DisposableCommandManager.baseString}$uuid"
+    public val command: String = "${baseString}$uuid"
     public var remainAccessCount: Int? = accessCount
         private set
 
     public var isValid: Boolean = false
         private set
 
+    private val removalJob = if (expire != LocalTime.MAX) object : BukkitRunnable() {
+        override fun run() {
+            dispose()
+        }
+    }.runTaskLater(plugin, Duration.between(LocalTime.now(), expire).toMillis() / 50)
+    else null
+
     public fun dispose(): Boolean {
         if (!isValid) {
             return false
         }
         isValid = false
-        DisposableCommandManager.commandCallback.remove(uuid)
-        removalTask?.cancel()
+        commands.remove(uuid)
+        removalJob?.cancel()
 
         return true
     }
@@ -63,6 +76,56 @@ public class DisposableCommand internal constructor(
 
         logger.catchAll("Exception thrown while executing command callback") {
             callback(player)
+        }
+    }
+
+    @Component
+    @LoadOrder(LoadOrder.FASTEST)
+    private companion object {
+        private val logger = KotlinLogging.logger {}
+        private val plugin: Spikot by inject()
+
+        private val baseString = "disposable-command-"
+        private val expectedLength = ("/" + baseString + UUID.randomUUID()).length
+        private val commands = HashMap<UUID, DisposableCommand>()
+
+        @EventHandler
+        private fun PlayerCommandPreprocessEvent.onCommandPreprocess() {
+            if (message.length != expectedLength || !message.drop(1).startsWith(baseString))
+                return
+
+            isCancelled = true
+
+            val uuid = UUID.fromString(message.substring(baseString.length + 1))
+            val commandCallback = commands[uuid]
+                ?: throw IllegalStateException("Command callback id $uuid is not found")
+
+            commandCallback.execute(player)
+        }
+
+        @EventHandler
+        private fun PlayerQuitEvent.onQuit() {
+            commands.entries.removeIf { (_, value) ->
+                value.owingPlayer == player
+            }
+        }
+
+        fun create(
+            owingPlayer: Player? = null,
+            accessCount: Int? = null,
+            expire: LocalTime = LocalTime.MAX,
+            callback: (Player) -> Unit
+        ): DisposableCommand {
+            val cmd = DisposableCommand(
+                UUID.randomUUID(),
+                owingPlayer,
+                accessCount,
+                expire,
+                callback
+            )
+            commands[cmd.uuid] = cmd
+
+            return cmd
         }
     }
 }
