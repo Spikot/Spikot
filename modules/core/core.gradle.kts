@@ -32,7 +32,6 @@ supportingVersion(
 )
 
 dependencies {
-    api(kotlin("reflect"))
     api("org.reflections", "reflections", Version.reflections)
     implementation("com.google.guava", "guava", Version.guava)
     implementation("com.charleskorn.kaml","kaml",Version.kaml)

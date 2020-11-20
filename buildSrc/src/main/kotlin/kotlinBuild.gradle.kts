@@ -33,8 +33,10 @@ repositories {
 
 dependencies {
     api(kotlin("stdlib-jdk8"))
+    api(kotlin("reflect"))
     api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", Version.coroutine)
-    api("org.jetbrains.kotlinx","kotlinx-coroutines-jdk8", Version.coroutine)
+    api("org.jetbrains.kotlinx", "kotlinx-coroutines-jdk8", Version.coroutine)
+    api("org.jetbrains.kotlinx", "kotlinx-coroutines-reactive", Version.coroutine)
     api("org.jetbrains.kotlinx", "kotlinx-serialization-core", Version.serialization)
     api("io.github.microutils", "kotlin-logging", Version.kotlin_logging)
 

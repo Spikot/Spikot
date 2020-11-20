@@ -31,7 +31,6 @@ supportingVersion(
 )
 
 dependencies {
-    implementation(kotlin("reflect"))
     implementation(modules("core"))
     implementation(modules("packet"))
 }
