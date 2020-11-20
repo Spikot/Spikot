@@ -25,7 +25,21 @@ package io.heartpattern.spikot.player
 import io.heartpattern.spikot.SpikotPlugin
 import io.heartpattern.spikot.bean.BeanDescription
 import org.bukkit.entity.Player
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 public inline fun <reified T> Player.getBean(plugin: SpikotPlugin, name: String? = null): T? {
     return PlayerScopeHandler[plugin]?.get(this)?.getBean(BeanDescription.fromTypeAndName(T::class, name)) as T?
+}
+
+public inline fun <reified T> playerBeanDelegate(plugin: SpikotPlugin, name: String? = null): ReadOnlyProperty<Player, T> = object: ReadOnlyProperty<Player, T>{
+    private val beans = HashMap<UUID, T>()
+
+    override fun getValue(thisRef: Player, property: KProperty<*>): T {
+        return beans.getOrPut(thisRef.uniqueId){
+            thisRef.getBean(plugin, name)!!
+        }
+    }
 }
