@@ -34,14 +34,14 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
 import java.time.Duration
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.util.*
 
 public class DisposableCommand private constructor(
     public val uuid: UUID,
     public val owingPlayer: Player?,
     public val accessCount: Int?,
-    public val expire: LocalTime,
+    public val expire: LocalDateTime,
     private val callback: (Player) -> Unit,
 ) {
     public val command: String = "${baseString}$uuid"
@@ -51,11 +51,11 @@ public class DisposableCommand private constructor(
     public var isValid: Boolean = false
         private set
 
-    private val removalJob = if (expire != LocalTime.MAX) object : BukkitRunnable() {
+    private val removalJob = if (expire != LocalDateTime.MAX) object : BukkitRunnable() {
         override fun run() {
             dispose()
         }
-    }.runTaskLater(plugin, Duration.between(LocalTime.now(), expire).toMillis() / 50)
+    }.runTaskLater(plugin, Duration.between(LocalDateTime.now(), expire).toMillis() / 50)
     else null
 
     public fun dispose(): Boolean {
@@ -81,7 +81,7 @@ public class DisposableCommand private constructor(
 
     @Component
     @LoadOrder(LoadOrder.FASTEST)
-    private companion object {
+    public companion object {
         private val logger = KotlinLogging.logger {}
         private val plugin: Spikot by inject()
 
@@ -110,10 +110,10 @@ public class DisposableCommand private constructor(
             }
         }
 
-        fun create(
+        public fun create(
             owingPlayer: Player? = null,
             accessCount: Int? = null,
-            expire: LocalTime = LocalTime.MAX,
+            expire: LocalDateTime = LocalDateTime.MAX,
             callback: (Player) -> Unit
         ): DisposableCommand {
             val cmd = DisposableCommand(
