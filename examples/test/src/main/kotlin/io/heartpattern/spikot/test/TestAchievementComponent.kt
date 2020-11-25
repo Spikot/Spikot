@@ -61,7 +61,7 @@ class TestAchievementComponent : AdvancedCommandExecutor() {
         if (args[0] == "reset") {
             (sender as Player).updateAdvancement(
                 true,
-                AdvancementContainer().apply { addAdvancement(this@TestAchievementComponent.root) },
+                setOf(AdvancementContainer.of(this@TestAchievementComponent.root)),
                 emptySet(),
                 mapOf()
             )
@@ -74,7 +74,7 @@ class TestAchievementComponent : AdvancedCommandExecutor() {
         } else {
             (sender as Player).updateAdvancement(
                 false,
-                AdvancementContainer(),
+                setOf(AdvancementContainer()),
                 emptySet(),
                 mapOf(
                     ResourceLocation("test", "root") to AdvancementProgress(

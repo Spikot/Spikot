@@ -40,7 +40,7 @@ public open class TypedMap(
         return if (value == null)
             None
         else
-            Some(value as T)
+            Some(value.value as T)
     }
 
     public operator fun <T> get(key: DefaultTypedKey<T>): T {

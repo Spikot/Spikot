@@ -92,6 +92,8 @@ public interface BeanDefinition {
      */
     public fun invokeDestroyFunction(bean: Any)
 
+    public fun injectProperty(bean: Any, beanRegistry: BeanRegistry)
+
     public val description: BeanDescription
         get() = BeanDescription.fromTypeAndName(type, name)
 }

@@ -42,7 +42,7 @@ public fun Inventory.canAddAll(items: Collection<ItemStack>): Boolean {
         if (item.isFull())
             continue
 
-        unFullItems += item
+        unFullItems += item.clone()
     }
 
     outer@ for (item in items) {
@@ -79,7 +79,7 @@ public fun Inventory.canAddAll(items: Collection<ItemStack>): Boolean {
             val count = min(remainAmount, item.maxStackSize)
             remainAmount -= count
 
-            val clone = if (remainAmount == 0) item else item.clone()
+            val clone = item.clone()
             clone.amount = remainAmount
 
             if (!clone.isFull())

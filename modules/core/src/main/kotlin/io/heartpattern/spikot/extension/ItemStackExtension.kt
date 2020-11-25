@@ -34,10 +34,10 @@ import kotlin.contracts.contract
 public fun ItemStack?.isEmpty(): Boolean {
     contract { returns(false) implies (this@isEmpty != null) }
     return when {
-        this == null -> false
-        type == Material.AIR -> false
-        amount == 0 -> false
-        else -> true
+        this == null -> true
+        type == Material.AIR -> true
+        amount == 0 -> true
+        else -> false
     }
 }
 

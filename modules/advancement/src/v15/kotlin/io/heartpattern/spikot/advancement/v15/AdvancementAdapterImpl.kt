@@ -49,13 +49,13 @@ class AdvancementAdapterImpl : AdvancementAdapter {
     override fun sendAdvancementData(
         player: Player,
         reset: Boolean,
-        add: AdvancementContainer,
-        remove: Set<ResourceLocation>,
+        add: Collection<AdvancementContainer>,
+        remove: Collection<ResourceLocation>,
         progress: Map<ResourceLocation, AdvancementProgress>
     ) {
         val packet = PacketPlayOutAdvancements(
             reset,
-            add.allAdvancements.map { it.toNMS() },
+            add.flatMap { it.allAdvancements }.map { it.toNMS() },
             remove.map { MinecraftKey(it.namespace, it.path) }.toMutableSet(),
             progress.map { (key, value) ->
                 MinecraftKey(key.namespace, key.path) to value.toNMS()

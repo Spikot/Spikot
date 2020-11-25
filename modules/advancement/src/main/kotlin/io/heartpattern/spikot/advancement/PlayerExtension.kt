@@ -34,8 +34,8 @@ import java.time.LocalDateTime
 
 public fun Player.updateAdvancement(
     reset: Boolean = false,
-    add: AdvancementContainer = AdvancementContainer(),
-    remove: Set<ResourceLocation> = emptySet(),
+    add: Collection<AdvancementContainer> = emptySet(),
+    remove: Collection<ResourceLocation> = emptySet(),
     progress: Map<ResourceLocation, AdvancementProgress> = emptyMap()
 ) {
     AdvancementAdapter.sendAdvancementData(this, reset, add, remove, progress)
@@ -62,7 +62,7 @@ public fun Player.sendAdvancementMessage(icon: ItemStack, title: String, type: A
         AdvancementRewards.EMPTY
     )
     updateAdvancement(
-        add = AdvancementContainer.of(advancement),
+        add = setOf(AdvancementContainer.of(advancement)),
         progress = mapOf(
             id to AdvancementProgress(advancement, mapOf("IMP" to AdvancementCriterionProgress.Complete(LocalDateTime.now())))
         )

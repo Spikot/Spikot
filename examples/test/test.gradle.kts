@@ -40,6 +40,7 @@ dependencies {
 spigot {
     main = "io.heartpattern.spikot.test.TestPlugin"
     depends = listOf("Spikot")
+    apiVersion = "1.16"
 
     commands{
         create("test_achievement")

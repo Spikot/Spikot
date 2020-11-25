@@ -25,14 +25,12 @@ package io.heartpattern.spikot.bean.definition
 import io.heartpattern.spikot.annotation.MergedAnnotations
 import io.heartpattern.spikot.annotation.mergedAnnotations
 import io.heartpattern.spikot.bean.*
-import io.heartpattern.spikot.bean.definition.DefaultAnnotationBeanDefinition.PropertyInjector
 import io.heartpattern.spikot.condition.Condition
 import io.heartpattern.spikot.condition.ConditionContext
 import io.heartpattern.spikot.condition.ConditionEvaluator
 import io.heartpattern.spikot.reflection.getObjectInstanceOrCreate
 import io.heartpattern.spikot.reflection.withAccessibility
 import java.util.*
-import javax.annotation.PreDestroy
 import kotlin.collections.ArrayList
 import kotlin.reflect.*
 import kotlin.reflect.full.memberFunctions
@@ -81,12 +79,16 @@ public class DefaultAnnotationBeanDefinition private constructor(
         val constructorParameter = constructorInjects.map(beanRegistry::getBean)
         val instance = constructor(constructorParameter)
 
-        for ((descriptor, injector) in propertyInjects) {
-            val bean = beanRegistry.getBean(descriptor)
-            injector.inject(instance, bean)
-        }
+        injectProperty(instance, beanRegistry)
 
         return instance
+    }
+
+    override fun injectProperty(bean: Any, beanRegistry: BeanRegistry) {
+        for ((descriptor, injector) in propertyInjects) {
+            val injected = beanRegistry.getBean(descriptor)
+            injector.inject(bean, injected)
+        }
     }
 
     override fun checkCondition(conditionContext: ConditionContext): Boolean {

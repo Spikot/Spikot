@@ -26,36 +26,35 @@ import io.heartpattern.spikot.ResourceLocation
 import io.heartpattern.spikot.adapter.Adapter
 import io.heartpattern.spikot.advancement.AdvancementAdapter
 import io.heartpattern.spikot.advancement.model.*
-import io.heartpattern.spikot.advancement.model.Advancement
-import io.heartpattern.spikot.advancement.model.AdvancementDisplay
-import io.heartpattern.spikot.advancement.model.AdvancementProgress
-import io.heartpattern.spikot.advancement.model.AdvancementRewards
 import io.heartpattern.spikot.advancement.model.criterion.AdvancementCriterion
 import io.heartpattern.spikot.advancement.model.trigger.ImpossibleTrigger
 import io.heartpattern.spikot.packet.sendPacket
-import net.minecraft.server.v1_16_R3.*
+import net.minecraft.server.v1_16_R3.CriterionTriggerImpossible
+import net.minecraft.server.v1_16_R3.CustomFunction
+import net.minecraft.server.v1_16_R3.MinecraftKey
+import net.minecraft.server.v1_16_R3.PacketPlayOutAdvancements
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage
 import org.bukkit.entity.Player
 import net.minecraft.server.v1_16_R3.Advancement as NMSAdvancement
 import net.minecraft.server.v1_16_R3.AdvancementDisplay as NMSAdvancementDisplay
+import net.minecraft.server.v1_16_R3.AdvancementFrameType as NMSAdvancementFrameType
 import net.minecraft.server.v1_16_R3.AdvancementProgress as NMSAdvancementProgress
 import net.minecraft.server.v1_16_R3.AdvancementRewards as NMSAdvancementRewards
 import net.minecraft.server.v1_16_R3.Criterion as NMSCriterion
-import net.minecraft.server.v1_16_R3.AdvancementFrameType as NMSAdvancementFrameType
 
 @Adapter("1.16~1.16.4")
 class AdvancementAdapterImpl : AdvancementAdapter {
     override fun sendAdvancementData(
         player: Player,
         reset: Boolean,
-        add: AdvancementContainer,
-        remove: Set<ResourceLocation>,
+        add: Collection<AdvancementContainer>,
+        remove: Collection<ResourceLocation>,
         progress: Map<ResourceLocation, AdvancementProgress>
     ) {
         val packet = PacketPlayOutAdvancements(
             reset,
-            add.allAdvancements.map { it.toNMS() },
+            add.flatMap { it.allAdvancements }.map { it.toNMS() },
             remove.map { MinecraftKey(it.namespace, it.path) }.toMutableSet(),
             progress.map { (key, value) ->
                 MinecraftKey(key.namespace, key.path) to value.toNMS()

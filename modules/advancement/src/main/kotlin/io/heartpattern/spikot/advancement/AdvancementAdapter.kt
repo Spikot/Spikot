@@ -34,8 +34,8 @@ public interface AdvancementAdapter {
     public fun sendAdvancementData(
         player: Player,
         reset: Boolean,
-        add: AdvancementContainer,
-        remove: Set<ResourceLocation>,
+        add: Collection<AdvancementContainer>,
+        remove: Collection<ResourceLocation>,
         progress: Map<ResourceLocation, AdvancementProgress>
     )
 
