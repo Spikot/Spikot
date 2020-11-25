@@ -27,6 +27,7 @@ plugins {
 
 repositories{
     mavenLocal()
+    maven("https://maven.heartpattern.io/repository/maven-public/")
 }
 
 dependencies {
