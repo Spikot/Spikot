@@ -95,7 +95,7 @@ public fun KClass<*>.toPrimitive(): KClass<*> {
 @OptIn(ExperimentalContracts::class)
 public inline fun <T> AccessibleObject.withAccessibility(block: () -> T): T {
     contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    val original = isAccessible
+    @Suppress("DEPRECATION") val original = isAccessible
     isAccessible = true
     return try {
         block()
