@@ -303,6 +303,16 @@ public class DefaultAnnotationBeanDefinition private constructor(
             )
         }
 
+        public fun <T: Any> fromProvider(type: KClass<T>, provider: ()->T): DefaultAnnotationBeanDefinition{
+            return DefaultAnnotationBeanDefinition(
+                type,
+                type.mergedAnnotations,
+                {provider()},
+                emptyList(),
+                type.resolveBeanName() ?: throw IllegalArgumentException("Cannot determine default bean name")
+            )
+        }
+
         private fun resolveConstructor(type: KClass<*>): KFunction<*> {
             // Constructor with @Inject has highest priority
             val found = type.constructors.filter { it.mergedAnnotations.has<Inject>() }

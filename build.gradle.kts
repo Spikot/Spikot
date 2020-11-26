@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-version = "5.1.1-SNAPSHOT"
+version = "5.1.2-SNAPSHOT"
 
 allprojects {
     group = "io.heartpattern.spikot"
-    version = "5.1.1-SNAPSHOT"
+    version = "5.1.2-SNAPSHOT"
 }
 
 repositories {
