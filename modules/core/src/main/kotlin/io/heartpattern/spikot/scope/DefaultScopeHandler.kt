@@ -50,6 +50,7 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
     internal fun initialize() {
         Bukkit.getPluginManager().plugins
             .filterIsInstance<SpikotPlugin>()
+            .filter{it.isEnabled}
             .forEachMergedException("Exception thrown while initialize $scope", ::addPlugin)
     }
 
@@ -57,6 +58,7 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
     internal fun destroy() {
         Bukkit.getPluginManager().plugins.reversed()
             .filterIsInstance<SpikotPlugin>()
+            .filter{it.isEnabled}
             .forEachMergedException("Exception thrown while destroy $scope", ::removePlugin)
     }
 
