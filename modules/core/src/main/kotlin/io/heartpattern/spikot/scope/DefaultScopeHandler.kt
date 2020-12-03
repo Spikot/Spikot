@@ -58,19 +58,24 @@ public abstract class DefaultScopeHandler<Q> : ScopeHandler<Q> {
     internal fun destroy() {
         Bukkit.getPluginManager().plugins.reversed()
             .filterIsInstance<SpikotPlugin>()
-            .filter{it.isEnabled}
             .forEachMergedException("Exception thrown while destroy $scope", ::removePlugin)
     }
 
     @EventHandler
-    private fun PluginEnableEvent.onEnable() {
+    internal fun PluginEnableEvent.onEnable() {
         val spikotPlugin = plugin as? SpikotPlugin ?: return
+        if(instances.contains(plugin.name))
+            return
+
         addPlugin(spikotPlugin)
     }
 
     @EventHandler
-    private fun PluginDisableEvent.onDisable() {
+    internal fun PluginDisableEvent.onDisable() {
         val spikotPlugin = plugin as? SpikotPlugin ?: return
+        if(!instances.contains(plugin.name))
+            return
+
         removePlugin(spikotPlugin)
     }
 
