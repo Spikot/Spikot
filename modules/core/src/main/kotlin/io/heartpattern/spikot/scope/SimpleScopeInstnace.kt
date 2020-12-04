@@ -20,43 +20,33 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm")
-    id("kr.entree.spigradle") version "2.1.1"
-}
+package io.heartpattern.spikot.scope
 
-repositories{
-    mavenLocal()
-    maven("https://maven.heartpattern.io/repository/maven-public/")
-}
+import io.heartpattern.spikot.SpikotPlugin
+import io.heartpattern.spikot.bean.BeanRegistry
+import io.heartpattern.spikot.type.TypedMap
 
-dependencies {
-    implementation(modules("core"))
-    implementation(modules("packet"))
-    implementation(modules("advancement"))
-    implementation(modules("menu"))
-    implementation("org.spigotmc", "spigot-api", "1.16.4-R0.1-SNAPSHOT")
-    implementation("org.spigotmc", "spigot", "1.16.4-R0.1-SNAPSHOT")
-}
+public class SimpleScopeInstance(
+    override val name: String,
+    override val scope: String,
+    override val owingPlugin: SpikotPlugin,
+    public val registry: BeanRegistry
+) : ScopeInstance, BeanRegistry by registry {
+    override val parents: Collection<ScopeInstance>
+        get() = emptySet()
+    override val data: TypedMap = TypedMap()
+    override var isClosed: Boolean = false
+        private set
 
-spigot {
-    main = "io.heartpattern.spikot.test.TestPlugin"
-    depends = listOf("Spikot")
-    apiVersion = "1.16"
+    override fun registerChildScope(scope: ScopeInstance) {
+        throw UnsupportedOperationException("Registering child is not implemented on SimpleScopeInstance")
+    }
 
-    commands{
-        create("test_achievement")
-        create("open_menu")
+    override fun unregisterChildScope(scope: ScopeInstance) {
+        throw java.lang.UnsupportedOperationException("Registering child is not implemented on SimpleScopeInstance")
+    }
+
+    override fun close() {
+        isClosed = true
     }
 }
-
-tasks {
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-}
-
-if (File(projectDir, "local.gradle.kts").exists())
-    apply("local.gradle.kts")

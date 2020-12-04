@@ -23,20 +23,20 @@
 package io.heartpattern.spikot.bean
 
 public class InstanceBeanRegistry(
+    private val parent: BeanRegistry,
     private val registry: Map<String, BeanHolder>
 ) : BeanRegistry {
-    override val allBeanName: Collection<String>
-        get() = registry.keys
+    override val allBeanName: Collection<String> = registry.keys + parent.allBeanName
 
     override val allBeanProcessors: Collection<String> = registry.asSequence()
         .filter { (_, v) -> v.instance is BeanProcessor }
         .map { it.key }
-        .toList()
+        .toList() + parent.allBeanProcessors
 
     override fun getBean(description: BeanDescription): Any {
         val list = getBeanHolders(description)
         if (list.isEmpty())
-            throw BeanNotFoundException(description, this)
+            return parent.getBean(description)
 
         if (list.size >= 2 && list.count { it.isPrimary } != 1)
             throw IllegalArgumentException("Cannot select unique bean from $description")
@@ -45,11 +45,11 @@ public class InstanceBeanRegistry(
     }
 
     override fun getBeans(description: BeanDescription): List<Any> {
-        return getBeanHolders(description).map { it.instance }
+        return getBeanHolders(description).map { it.instance } + parent.getBeans(description)
     }
 
     override fun hasBean(description: BeanDescription): Boolean {
-        return getBeanHolders(description).isNotEmpty()
+        return getBeanHolders(description).isNotEmpty() || parent.hasBean(description)
     }
 
     private fun getBeanHolders(description: BeanDescription): List<BeanHolder> {
@@ -66,7 +66,7 @@ public class InstanceBeanRegistry(
     }
 
     override fun hasInitializedBean(description: BeanDescription): Boolean {
-        return hasBean(description)
+        return hasBean(description) || parent.hasInitializedBean(description)
     }
 
     public data class BeanHolder(val instance: Any, val isPrimary: Boolean = false, val priority: Int = 0)

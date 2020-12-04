@@ -20,43 +20,38 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm")
-    id("kr.entree.spigradle") version "2.1.1"
-}
+package io.heartpattern.spikot.menu
 
-repositories{
-    mavenLocal()
-    maven("https://maven.heartpattern.io/repository/maven-public/")
-}
+import io.heartpattern.spikot.util.forEachMergedException
+import net.md_5.bungee.api.chat.ClickEvent
+import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.inventory.ItemStack
 
-dependencies {
-    implementation(modules("core"))
-    implementation(modules("packet"))
-    implementation(modules("advancement"))
-    implementation(modules("menu"))
-    implementation("org.spigotmc", "spigot-api", "1.16.4-R0.1-SNAPSHOT")
-    implementation("org.spigotmc", "spigot", "1.16.4-R0.1-SNAPSHOT")
-}
+public abstract class Button(
+    icon: ItemStack
+) {
+    private val listeners = HashSet<Listener>()
 
-spigot {
-    main = "io.heartpattern.spikot.test.TestPlugin"
-    depends = listOf("Spikot")
-    apiVersion = "1.16"
-
-    commands{
-        create("test_achievement")
-        create("open_menu")
-    }
-}
-
-tasks {
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
+    public var icon: ItemStack = icon
+        set(value) {
+            field = value
+            listeners.forEachMergedException("Exception thrown while notifying listeners") {
+                it.update(icon)
+            }
         }
+
+    public abstract fun onClick(player: Player, clickEvent: InventoryClickEvent)
+
+    public fun registerListener(listener: Listener) {
+        listeners.add(listener)
+    }
+
+    public fun unregisterListener(listener: Listener) {
+        listeners.remove(listener)
+    }
+
+    public fun interface Listener {
+        public fun update(item: ItemStack): Unit
     }
 }
-
-if (File(projectDir, "local.gradle.kts").exists())
-    apply("local.gradle.kts")

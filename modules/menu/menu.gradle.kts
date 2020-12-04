@@ -21,42 +21,9 @@
  */
 
 plugins {
-    kotlin("jvm")
-    id("kr.entree.spigradle") version "2.1.1"
+    spigotBuild
 }
 
-repositories{
-    mavenLocal()
-    maven("https://maven.heartpattern.io/repository/maven-public/")
-}
-
-dependencies {
+dependencies{
     implementation(modules("core"))
-    implementation(modules("packet"))
-    implementation(modules("advancement"))
-    implementation(modules("menu"))
-    implementation("org.spigotmc", "spigot-api", "1.16.4-R0.1-SNAPSHOT")
-    implementation("org.spigotmc", "spigot", "1.16.4-R0.1-SNAPSHOT")
 }
-
-spigot {
-    main = "io.heartpattern.spikot.test.TestPlugin"
-    depends = listOf("Spikot")
-    apiVersion = "1.16"
-
-    commands{
-        create("test_achievement")
-        create("open_menu")
-    }
-}
-
-tasks {
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-}
-
-if (File(projectDir, "local.gradle.kts").exists())
-    apply("local.gradle.kts")

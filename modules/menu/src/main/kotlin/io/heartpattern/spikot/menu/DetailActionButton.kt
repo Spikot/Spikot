@@ -20,43 +20,39 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm")
-    id("kr.entree.spigradle") version "2.1.1"
-}
+package io.heartpattern.spikot.menu
 
-repositories{
-    mavenLocal()
-    maven("https://maven.heartpattern.io/repository/maven-public/")
-}
+import org.bukkit.entity.Player
+import org.bukkit.event.inventory.ClickType.*
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.inventory.ItemStack
 
-dependencies {
-    implementation(modules("core"))
-    implementation(modules("packet"))
-    implementation(modules("advancement"))
-    implementation(modules("menu"))
-    implementation("org.spigotmc", "spigot-api", "1.16.4-R0.1-SNAPSHOT")
-    implementation("org.spigotmc", "spigot", "1.16.4-R0.1-SNAPSHOT")
-}
-
-spigot {
-    main = "io.heartpattern.spikot.test.TestPlugin"
-    depends = listOf("Spikot")
-    apiVersion = "1.16"
-
-    commands{
-        create("test_achievement")
-        create("open_menu")
-    }
-}
-
-tasks {
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
+public abstract class DetailActionButton(
+    icon: ItemStack
+) : Button(
+    icon
+) {
+    override final fun onClick(player: Player, clickEvent: InventoryClickEvent) {
+        when (clickEvent.click) {
+            LEFT -> onLeftClick(player, false)
+            SHIFT_LEFT -> onLeftClick(player, true)
+            RIGHT -> onRightClick(player, false)
+            SHIFT_RIGHT -> onRightClick(player, true)
+            DROP -> onDropClick(player, false)
+            CONTROL_DROP -> onDropClick(player, true)
+            else -> Unit // Nothing
         }
     }
-}
 
-if (File(projectDir, "local.gradle.kts").exists())
-    apply("local.gradle.kts")
+    public open fun onRightClick(player: Player, isShift: Boolean) {
+
+    }
+
+    public open fun onLeftClick(player: Player, isShift: Boolean) {
+
+    }
+
+    public open fun onDropClick(player: Player, isCtrl: Boolean) {
+
+    }
+}

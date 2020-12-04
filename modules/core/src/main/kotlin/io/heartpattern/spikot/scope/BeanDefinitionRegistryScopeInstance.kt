@@ -309,6 +309,7 @@ public class BeanDefinitionRegistryScopeInstance constructor(
 
             beanInCreation += holder
             val instance = holder.definition.create(this)
+            holder.definition.injectProperty(instance, this)
             holder.instance = instance
             beanInCreation -= holder
 

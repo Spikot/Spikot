@@ -24,14 +24,45 @@
 package io.heartpattern.spikot.bean
 
 import io.heartpattern.spikot.annotation.MergedAnnotations
+import io.heartpattern.spikot.bean.definition.BeanDefinition
+import io.heartpattern.spikot.scope.ScopeInstance
+import io.heartpattern.spikot.util.forEachMergedException
 import io.heartpattern.spikot.util.toFirstLowerCase
 import kotlin.reflect.KClass
+import kotlin.reflect.jvm.jvmName
 
 internal fun MergedAnnotations.resolveBeanName(): String? {
     return get<Qualifier>()
         ?.getTypedAttribute("name")
 }
 
-internal fun KClass<*>.resolveBeanName(): String? {
-    return simpleName?.toFirstLowerCase()
+internal fun KClass<*>.resolveBeanName(): String {
+    return simpleName?.toFirstLowerCase() ?: jvmName.toFirstLowerCase()
+}
+
+public fun BeanDefinition.initializeBean(instance: Any, scope: ScopeInstance) {
+    injectProperty(instance, scope)
+    val context = BeanProcessorContext(scope)
+    scope.allBeanProcessors.forEachMergedException("Exception thrown while invoke bean processors") { name ->
+        (scope.getBean(BeanDescription.fromName(name)) as BeanProcessor).beforeInitialize(
+            context, this, instance
+        )
+    }
+    invokeInitializeFunction(instance)
+}
+
+public fun BeanDefinition.createAndInitialize(scope: ScopeInstance): Any{
+    val instance = create(scope)
+    initializeBean(instance, scope)
+    return instance
+}
+
+public fun BeanDefinition.destroyBean(instance: Any, scope: ScopeInstance){
+    val context = BeanProcessorContext(scope)
+    scope.allBeanProcessors.forEachMergedException("Exception thrown while invoke bean processors") { name ->
+        (scope.getBean(BeanDescription.fromName(name)) as BeanProcessor).afterDestroy(
+            context, this, instance
+        )
+    }
+    invokeDestroyFunction(instance)
 }

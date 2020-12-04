@@ -77,11 +77,8 @@ public class DefaultAnnotationBeanDefinition private constructor(
         explicitDependencies.forEach(beanRegistry::getBean)
 
         val constructorParameter = constructorInjects.map(beanRegistry::getBean)
-        val instance = constructor(constructorParameter)
 
-        injectProperty(instance, beanRegistry)
-
-        return instance
+        return constructor(constructorParameter)
     }
 
     override fun injectProperty(bean: Any, beanRegistry: BeanRegistry) {
@@ -240,7 +237,6 @@ public class DefaultAnnotationBeanDefinition private constructor(
         public fun fromClass(type: KClass<*>): DefaultAnnotationBeanDefinition {
             val annotations = type.mergedAnnotations
             val defaultName = type.resolveBeanName()
-                ?: throw IllegalArgumentException("Cannot determine default bean name")
 
             if (type.objectInstance != null) {
                 return DefaultAnnotationBeanDefinition(
@@ -303,13 +299,13 @@ public class DefaultAnnotationBeanDefinition private constructor(
             )
         }
 
-        public fun <T: Any> fromProvider(type: KClass<T>, provider: ()->T): DefaultAnnotationBeanDefinition{
+        public fun <T: Any> fromProvider(type: KClass<out T>, provider: ()->T): DefaultAnnotationBeanDefinition{
             return DefaultAnnotationBeanDefinition(
                 type,
                 type.mergedAnnotations,
                 {provider()},
                 emptyList(),
-                type.resolveBeanName() ?: throw IllegalArgumentException("Cannot determine default bean name")
+                type.resolveBeanName()
             )
         }
 

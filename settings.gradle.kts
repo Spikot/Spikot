@@ -30,7 +30,8 @@ val modules = listOf<String>(
     "nbt",
     "item",
     "adapter",
-    "disposable-command"
+    "disposable-command",
+    "menu"
 )
 
 val examples = listOf<String>(
