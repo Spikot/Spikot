@@ -52,12 +52,12 @@ class DefaultAnnotationBeanDefinitionTest {
     fun creationTest() {
         val dummyA = DummyBeanA()
         val dummyB = DummyBeanB()
-        val registry = InstanceBeanRegistry(mapOf(
+        val registry = InstanceBeanRegistry(EmptyBeanRegistry, mapOf(
             "dummyBeanA" to InstanceBeanRegistry.BeanHolder(dummyA),
             "dummyBeanB" to InstanceBeanRegistry.BeanHolder(dummyB)
         ))
 
-        val missingRegistry = InstanceBeanRegistry(mapOf(
+        val missingRegistry = InstanceBeanRegistry(EmptyBeanRegistry, mapOf(
             "dummyBeanA" to InstanceBeanRegistry.BeanHolder(dummyA)
         ))
 
@@ -80,6 +80,7 @@ class DefaultAnnotationBeanDefinitionTest {
     private inline fun <reified T : Any> checkCreation(registry: BeanRegistry): T {
         val defaultBean = T::class.toDefinition()
         val defaultBeanInstance = defaultBean.create(registry)
+        defaultBean.injectProperty(defaultBeanInstance, registry)
         assertTrue(defaultBeanInstance is T)
         return defaultBeanInstance as T
     }

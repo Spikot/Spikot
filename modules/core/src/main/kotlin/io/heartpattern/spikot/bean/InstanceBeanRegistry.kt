@@ -23,7 +23,7 @@
 package io.heartpattern.spikot.bean
 
 public class InstanceBeanRegistry(
-    private val parent: BeanRegistry,
+    private val parent: BeanRegistry = EmptyBeanRegistry,
     private val registry: Map<String, BeanHolder>
 ) : BeanRegistry {
     override val allBeanName: Collection<String> = registry.keys + parent.allBeanName
